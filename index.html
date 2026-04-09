@@ -1,0 +1,1667 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Chiky Barber</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;500;600;700;800&family=Inter:wght@300;400;500&display=swap" rel="stylesheet" />
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    :root {
+      --bg:     #080808;
+      --s1:     #101010;
+      --s2:     #181818;
+      --border: rgba(255,255,255,0.07);
+      --mid:    rgba(255,255,255,0.12);
+      --muted:  #666;
+      --sub:    #999;
+      --light:  #ccc;
+      --white:  #f2f2f2;
+      --pure:   #fff;
+    }
+
+    html { scroll-behavior: smooth; }
+
+    body {
+      background: var(--bg);
+      color: var(--white);
+      font-family: 'Inter', sans-serif;
+      font-size: 16px;
+      line-height: 1.6;
+      overflow-x: hidden;
+    }
+
+    /* ── PAGE LOADER ── */
+    #loader {
+      position: fixed;
+      inset: 0;
+      background: var(--bg);
+      z-index: 9999;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      transition: opacity 0.6s ease, visibility 0.6s ease;
+    }
+
+    #loader.hide { opacity: 0; visibility: hidden; }
+
+    .loader-inner {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 1.5rem;
+    }
+
+    .loader-logo {
+      font-family: 'Syne', sans-serif;
+      font-weight: 800;
+      font-size: 2rem;
+      letter-spacing: 0.15em;
+      text-transform: uppercase;
+      color: var(--pure);
+      animation: loaderFade 0.8s ease forwards;
+    }
+
+    .loader-bar {
+      width: 160px;
+      height: 1px;
+      background: var(--border);
+      position: relative;
+      overflow: hidden;
+    }
+
+    .loader-bar::after {
+      content: '';
+      position: absolute;
+      left: -100%;
+      top: 0;
+      width: 100%;
+      height: 100%;
+      background: var(--pure);
+      animation: loaderSlide 1s cubic-bezier(.4,0,.2,1) forwards;
+    }
+
+    @keyframes loaderFade {
+      from { opacity: 0; transform: translateY(10px); }
+      to   { opacity: 1; transform: none; }
+    }
+
+    @keyframes loaderSlide {
+      from { left: -100%; }
+      to   { left: 100%; }
+    }
+
+    /* ── CURSOR ── */
+    .cursor {
+      position: fixed;
+      width: 8px;
+      height: 8px;
+      background: var(--pure);
+      border-radius: 50%;
+      pointer-events: none;
+      z-index: 9998;
+      transition: transform 0.15s ease, opacity 0.3s ease;
+      transform: translate(-50%, -50%);
+    }
+
+    .cursor-ring {
+      position: fixed;
+      width: 36px;
+      height: 36px;
+      border: 1px solid rgba(255,255,255,0.35);
+      border-radius: 50%;
+      pointer-events: none;
+      z-index: 9997;
+      transition: transform 0.35s cubic-bezier(.4,0,.2,1), width 0.3s ease, height 0.3s ease, opacity 0.3s ease;
+      transform: translate(-50%, -50%);
+    }
+
+    .cursor-ring.expand { width: 56px; height: 56px; opacity: 0.5; }
+
+    @media (hover: none) { .cursor, .cursor-ring { display: none; } }
+
+    /* ── NAV ── */
+    nav {
+      position: fixed;
+      top: 0; left: 0; right: 0;
+      z-index: 100;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 1.5rem 2.5rem;
+      transition: all 0.4s cubic-bezier(.4,0,.2,1);
+    }
+
+    nav.scrolled {
+      padding: 1rem 2.5rem;
+      background: rgba(8,8,8,0.82);
+      backdrop-filter: blur(20px) saturate(180%);
+      border-bottom: 1px solid var(--border);
+    }
+
+    .logo {
+      font-family: 'Syne', sans-serif;
+      font-weight: 800;
+      font-size: 1.15rem;
+      letter-spacing: 0.08em;
+      color: var(--pure);
+      text-decoration: none;
+      text-transform: uppercase;
+      animation: slideDown 0.8s cubic-bezier(.4,0,.2,1) both;
+      animation-delay: 1.2s;
+    }
+
+    .nav-center {
+      display: flex;
+      gap: 0.25rem;
+      background: rgba(255,255,255,0.05);
+      border: 1px solid var(--border);
+      border-radius: 100px;
+      padding: 0.35rem;
+      animation: slideDown 0.8s cubic-bezier(.4,0,.2,1) both;
+      animation-delay: 1.3s;
+    }
+
+    .nav-center a {
+      color: var(--sub);
+      text-decoration: none;
+      font-size: 0.78rem;
+      font-weight: 500;
+      letter-spacing: 0.04em;
+      padding: 0.4rem 1rem;
+      border-radius: 100px;
+      transition: background 0.25s, color 0.25s;
+    }
+
+    .nav-center a:hover { background: rgba(255,255,255,0.08); color: var(--pure); }
+
+    .nav-cta {
+      font-family: 'Syne', sans-serif;
+      font-weight: 700;
+      font-size: 0.78rem;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      color: var(--bg);
+      background: var(--pure);
+      padding: 0.6rem 1.4rem;
+      border-radius: 100px;
+      text-decoration: none;
+      animation: slideDown 0.8s cubic-bezier(.4,0,.2,1) both;
+      animation-delay: 1.4s;
+      transition: opacity 0.2s, transform 0.2s;
+    }
+
+    .nav-cta:hover { opacity: 0.85; transform: scale(0.97); }
+
+    @keyframes slideDown {
+      from { opacity: 0; transform: translateY(-14px); }
+      to   { opacity: 1; transform: none; }
+    }
+
+    .hamburger {
+      display: none;
+      background: rgba(255,255,255,0.06);
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      cursor: pointer;
+      padding: 0.5rem 0.65rem;
+      flex-direction: column;
+      gap: 4px;
+    }
+
+    .hamburger span { display: block; width: 18px; height: 1.5px; background: var(--white); }
+
+    /* ── HERO ── */
+    #hero {
+      min-height: 100svh;
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      align-items: center;
+      gap: 0;
+      padding: 7rem 0 0;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .hero-left {
+      padding: 3rem 3rem 5rem;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      height: 100%;
+    }
+
+    .hero-pill {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.5rem;
+      background: rgba(255,255,255,0.06);
+      border: 1px solid var(--border);
+      border-radius: 100px;
+      padding: 0.4rem 0.9rem;
+      font-size: 0.72rem;
+      font-weight: 500;
+      letter-spacing: 0.06em;
+      color: var(--sub);
+      margin-bottom: 2.5rem;
+      opacity: 0;
+      animation: fadeUp 0.8s cubic-bezier(.4,0,.2,1) forwards;
+      animation-delay: 1.4s;
+    }
+
+    .hero-pill-dot {
+      width: 6px;
+      height: 6px;
+      border-radius: 50%;
+      background: #4ade80;
+      animation: pulse 2s ease infinite;
+      flex-shrink: 0;
+    }
+
+    @keyframes pulse {
+      0%, 100% { opacity: 1; transform: scale(1); }
+      50%       { opacity: 0.4; transform: scale(0.7); }
+    }
+
+    .hero-title {
+      font-family: 'Syne', sans-serif;
+      font-weight: 800;
+      font-size: clamp(4rem, 7vw, 7.5rem);
+      line-height: 0.9;
+      letter-spacing: -0.03em;
+      color: var(--pure);
+      text-transform: uppercase;
+      margin-bottom: 2rem;
+    }
+
+    .hero-title .outline {
+      -webkit-text-stroke: 1.5px rgba(255,255,255,0.35);
+      color: transparent;
+    }
+
+    .hero-title .word {
+      display: block;
+      overflow: hidden;
+    }
+
+    .hero-title .word span {
+      display: block;
+      opacity: 0;
+      transform: translateY(100%);
+      animation: wordUp 0.8s cubic-bezier(.4,0,.2,1) forwards;
+    }
+
+    .hero-title .word:nth-child(1) span { animation-delay: 1.5s; }
+    .hero-title .word:nth-child(2) span { animation-delay: 1.65s; }
+    .hero-title .word:nth-child(3) span { animation-delay: 1.8s; }
+
+    @keyframes wordUp {
+      from { opacity: 0; transform: translateY(100%); }
+      to   { opacity: 1; transform: none; }
+    }
+
+    .hero-desc {
+      font-size: 0.95rem;
+      font-weight: 300;
+      color: var(--sub);
+      max-width: 300px;
+      line-height: 1.8;
+      margin-bottom: 2.5rem;
+      opacity: 0;
+      animation: fadeUp 0.8s cubic-bezier(.4,0,.2,1) forwards;
+      animation-delay: 2s;
+    }
+
+    .hero-actions {
+      display: flex;
+      gap: 0.75rem;
+      flex-wrap: wrap;
+      opacity: 0;
+      animation: fadeUp 0.8s cubic-bezier(.4,0,.2,1) forwards;
+      animation-delay: 2.1s;
+    }
+
+    @keyframes fadeUp {
+      from { opacity: 0; transform: translateY(18px); }
+      to   { opacity: 1; transform: none; }
+    }
+
+    .btn-primary {
+      font-family: 'Syne', sans-serif;
+      font-weight: 700;
+      font-size: 0.8rem;
+      letter-spacing: 0.06em;
+      text-transform: uppercase;
+      color: var(--bg);
+      background: var(--pure);
+      padding: 0.9rem 2rem;
+      border-radius: 100px;
+      text-decoration: none;
+      transition: opacity 0.2s, transform 0.2s;
+    }
+
+    .btn-primary:hover { opacity: 0.85; transform: scale(0.97); }
+
+    .btn-ghost {
+      font-family: 'Syne', sans-serif;
+      font-weight: 600;
+      font-size: 0.8rem;
+      letter-spacing: 0.06em;
+      text-transform: uppercase;
+      color: var(--sub);
+      background: rgba(255,255,255,0.04);
+      border: 1px solid var(--border);
+      padding: 0.9rem 2rem;
+      border-radius: 100px;
+      text-decoration: none;
+      transition: background 0.2s, color 0.2s;
+    }
+
+    .btn-ghost:hover { background: rgba(255,255,255,0.08); color: var(--pure); }
+
+    /* HERO STATS BAR */
+    .hero-stats-bar {
+      display: flex;
+      gap: 0;
+      margin-top: auto;
+      border-top: 1px solid var(--border);
+      padding-top: 2rem;
+      opacity: 0;
+      animation: fadeUp 0.8s cubic-bezier(.4,0,.2,1) forwards;
+      animation-delay: 2.2s;
+    }
+
+    .hstat {
+      flex: 1;
+      padding-right: 1.5rem;
+      border-right: 1px solid var(--border);
+      margin-right: 1.5rem;
+    }
+
+    .hstat:last-child { border-right: none; margin-right: 0; padding-right: 0; }
+
+    .hstat-num {
+      font-family: 'Syne', sans-serif;
+      font-weight: 800;
+      font-size: 1.8rem;
+      color: var(--pure);
+      display: block;
+      line-height: 1;
+    }
+
+    .hstat-lbl {
+      font-size: 0.65rem;
+      color: var(--muted);
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      margin-top: 0.25rem;
+    }
+
+    /* HERO RIGHT — PHOTO */
+    .hero-right {
+      height: 100%;
+      position: relative;
+      overflow: hidden;
+      min-height: 100svh;
+      opacity: 0;
+      animation: heroImgIn 1.2s cubic-bezier(.4,0,.2,1) forwards;
+      animation-delay: 1s;
+    }
+
+    @keyframes heroImgIn {
+      from { opacity: 0; clip-path: inset(0 100% 0 0); }
+      to   { opacity: 1; clip-path: inset(0 0% 0 0); }
+    }
+
+    .hero-photo {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      object-position: center top;
+      display: block;
+      filter: grayscale(15%);
+      transition: filter 0.5s ease, transform 6s ease;
+      transform: scale(1.05);
+    }
+
+    #hero:hover .hero-photo { filter: grayscale(0%); transform: scale(1.0); }
+
+    .hero-photo-overlay {
+      position: absolute;
+      inset: 0;
+      background: linear-gradient(to right, var(--bg) 0%, transparent 30%),
+                  linear-gradient(to top, var(--bg) 0%, transparent 25%);
+    }
+
+    .hero-photo-tag {
+      position: absolute;
+      bottom: 2rem;
+      right: 2rem;
+      background: rgba(8,8,8,0.75);
+      backdrop-filter: blur(16px);
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      padding: 1rem 1.4rem;
+      text-align: right;
+      animation: fadeUp 0.8s cubic-bezier(.4,0,.2,1) forwards;
+      animation-delay: 2s;
+      opacity: 0;
+    }
+
+    .photo-tag-name {
+      font-family: 'Syne', sans-serif;
+      font-weight: 700;
+      font-size: 1rem;
+      color: var(--pure);
+    }
+
+    .photo-tag-role {
+      font-size: 0.68rem;
+      color: var(--muted);
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      margin-top: 0.15rem;
+    }
+
+    /* ── MARQUEE ── */
+    .marquee-wrap {
+      overflow: hidden;
+      border-top: 1px solid var(--border);
+      border-bottom: 1px solid var(--border);
+      padding: 0.9rem 0;
+      background: var(--s1);
+    }
+
+    .marquee-track {
+      display: flex;
+      animation: marquee 18s linear infinite;
+      width: max-content;
+    }
+
+    .marquee-track span {
+      font-family: 'Syne', sans-serif;
+      font-weight: 700;
+      font-size: 0.72rem;
+      letter-spacing: 0.22em;
+      text-transform: uppercase;
+      color: var(--muted);
+      padding: 0 2.5rem;
+      white-space: nowrap;
+    }
+
+    .marquee-track span.dot { color: rgba(255,255,255,0.1); padding: 0; letter-spacing: 0; }
+
+    @keyframes marquee { from { transform: translateX(0); } to { transform: translateX(-50%); } }
+
+    /* ── SECTIONS ── */
+    section { padding: 7rem 2.5rem; }
+    .container { max-width: 1140px; margin: 0 auto; }
+
+    .tag {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.5rem;
+      font-size: 0.65rem;
+      font-weight: 500;
+      letter-spacing: 0.22em;
+      text-transform: uppercase;
+      color: var(--muted);
+      margin-bottom: 1.2rem;
+    }
+
+    .tag::before { content: ''; width: 16px; height: 1px; background: var(--muted); }
+
+    h2 {
+      font-family: 'Syne', sans-serif;
+      font-weight: 800;
+      font-size: clamp(2.2rem, 4.5vw, 3.5rem);
+      line-height: 1;
+      letter-spacing: -0.02em;
+      color: var(--pure);
+      text-transform: uppercase;
+    }
+
+    /* ── SERVICIOS ── */
+    #servicios { background: var(--s1); }
+
+    .serv-head {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      align-items: end;
+      margin-bottom: 4rem;
+      gap: 2rem;
+    }
+
+    .serv-head p {
+      font-size: 0.9rem;
+      color: var(--sub);
+      font-weight: 300;
+      line-height: 1.9;
+      max-width: 340px;
+      justify-self: end;
+    }
+
+    .serv-list { display: flex; flex-direction: column; }
+
+    .serv-item {
+      display: grid;
+      grid-template-columns: 48px 1fr auto;
+      align-items: center;
+      gap: 2rem;
+      padding: 1.8rem 1rem;
+      border-bottom: 1px solid var(--border);
+      cursor: default;
+      transition: background 0.3s, padding-left 0.3s;
+      border-radius: 4px;
+    }
+
+    .serv-item:first-child { border-top: 1px solid var(--border); }
+    .serv-item:hover { background: rgba(255,255,255,0.025); padding-left: 1.8rem; }
+
+    .serv-num {
+      font-family: 'Syne', sans-serif;
+      font-weight: 700;
+      font-size: 0.65rem;
+      letter-spacing: 0.1em;
+      color: var(--muted);
+    }
+
+    .serv-info { display: flex; flex-direction: column; gap: 0.25rem; }
+
+    .serv-name {
+      font-family: 'Syne', sans-serif;
+      font-weight: 700;
+      font-size: 1.3rem;
+      letter-spacing: -0.01em;
+      color: var(--pure);
+    }
+
+    .serv-desc { font-size: 0.83rem; color: var(--muted); font-weight: 300; }
+
+    /* ── SERVICIOS CTA BLOCK ── */
+    .btn-serv-cta {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.6rem;
+      font-family: 'Syne', sans-serif;
+      font-weight: 700;
+      font-size: 0.82rem;
+      letter-spacing: 0.06em;
+      text-transform: uppercase;
+      color: var(--bg);
+      background: var(--pure);
+      padding: 0.95rem 2rem;
+      border-radius: 100px;
+      text-decoration: none;
+      transition: opacity 0.2s, transform 0.2s;
+    }
+
+    .btn-serv-cta:hover { opacity: 0.85; transform: scale(0.97); }
+
+    .serv-preview-list {
+      display: flex;
+      flex-direction: column;
+      border-top: 1px solid var(--border);
+      position: relative;
+    }
+
+    .serv-preview-item {
+      display: grid;
+      grid-template-columns: 36px 1fr auto;
+      align-items: center;
+      gap: 1.2rem;
+      padding: 1.2rem 0;
+      border-bottom: 1px solid var(--border);
+      transition: opacity 0.3s;
+    }
+
+    .serv-preview-item.blurred {
+      mask-image: linear-gradient(to bottom, black 0%, transparent 100%);
+      -webkit-mask-image: linear-gradient(to bottom, black 0%, transparent 100%);
+      pointer-events: none;
+    }
+
+    .serv-preview-name {
+      font-family: 'Syne', sans-serif;
+      font-weight: 700;
+      font-size: 1.05rem;
+      color: var(--pure);
+    }
+
+    .serv-preview-price {
+      font-size: 0.88rem;
+      color: var(--sub);
+      white-space: nowrap;
+    }
+
+    .serv-preview-more {
+      padding-top: 1rem;
+      text-align: right;
+    }
+
+    .serv-preview-more a {
+      font-size: 0.78rem;
+      color: var(--muted);
+      text-decoration: none;
+      letter-spacing: 0.06em;
+      transition: color 0.2s;
+    }
+
+    .serv-preview-more a:hover { color: var(--pure); }
+
+    @media (max-width: 900px) {
+      .serv-cta-grid { grid-template-columns: 1fr !important; }
+    }
+
+    .serv-price {
+      font-family: 'Syne', sans-serif;
+      font-weight: 700;
+      font-size: 1rem;
+      color: var(--light);
+      white-space: nowrap;
+    }
+
+    /* ── GALERÍA ── */
+    #galeria { background: var(--bg); padding-bottom: 5rem; }
+
+    .gal-head {
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-end;
+      margin-bottom: 2.5rem;
+      gap: 1rem;
+    }
+
+    .gal-ig {
+      font-size: 0.75rem;
+      font-weight: 500;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      color: var(--sub);
+      text-decoration: none;
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+      transition: color 0.2s;
+    }
+
+    .gal-ig:hover { color: var(--pure); }
+    .gal-ig:hover svg { transform: translate(2px, -2px); }
+    .gal-ig svg { transition: transform 0.2s; }
+
+    .gal-grid {
+      display: grid;
+      grid-template-columns: repeat(12, 1fr);
+      grid-template-rows: 280px 200px;
+      gap: 3px;
+    }
+
+    .g {
+      position: relative;
+      overflow: hidden;
+      background: var(--s2);
+      border-radius: 6px;
+    }
+
+    .g:nth-child(1) { grid-column: span 5; grid-row: span 2; }
+    .g:nth-child(2) { grid-column: span 4; }
+    .g:nth-child(3) { grid-column: span 3; }
+    .g:nth-child(4) { grid-column: span 3; }
+    .g:nth-child(5) { grid-column: span 4; }
+
+    .g-inner {
+      width: 100%;
+      height: 100%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      background: linear-gradient(135deg, #141414, #1e1e1e);
+      transition: transform 0.6s cubic-bezier(.4,0,.2,1);
+    }
+
+    .g:hover .g-inner { transform: scale(1.06); }
+
+    .g-icon {
+      font-size: 2.5rem;
+      color: rgba(255,255,255,0.04);
+      font-family: 'Syne', sans-serif;
+      font-weight: 800;
+      letter-spacing: -0.04em;
+      user-select: none;
+    }
+
+    .g-overlay {
+      position: absolute;
+      inset: 0;
+      background: linear-gradient(to top, rgba(0,0,0,0.75) 0%, transparent 55%);
+      opacity: 0;
+      transition: opacity 0.35s;
+      display: flex;
+      align-items: flex-end;
+      padding: 1.2rem;
+    }
+
+    .g:hover .g-overlay { opacity: 1; }
+
+    .g-label {
+      font-size: 0.7rem;
+      font-weight: 600;
+      letter-spacing: 0.15em;
+      text-transform: uppercase;
+      color: var(--white);
+    }
+
+    /* ── ABOUT ── */
+    #about { background: var(--s1); }
+
+    .about-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 5rem;
+      align-items: center;
+    }
+
+    /* PHOTO in about */
+    .about-photo-wrap {
+      position: relative;
+      border-radius: 16px;
+      overflow: hidden;
+    }
+
+    .about-photo {
+      width: 100%;
+      aspect-ratio: 3/4;
+      object-fit: cover;
+      object-position: center top;
+      display: block;
+      filter: grayscale(20%);
+      transition: filter 0.5s, transform 0.5s;
+    }
+
+    .about-photo-wrap:hover .about-photo {
+      filter: grayscale(0%);
+      transform: scale(1.02);
+    }
+
+    .about-photo-overlay {
+      position: absolute;
+      inset: 0;
+      background: linear-gradient(to top, rgba(8,8,8,0.6) 0%, transparent 50%);
+    }
+
+    .about-chip {
+      position: absolute;
+      bottom: 1.5rem;
+      right: 1.5rem;
+      background: rgba(8,8,8,0.82);
+      backdrop-filter: blur(16px);
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      padding: 1rem 1.4rem;
+    }
+
+    .about-chip-num {
+      font-family: 'Syne', sans-serif;
+      font-weight: 800;
+      font-size: 2rem;
+      color: var(--pure);
+      line-height: 1;
+    }
+
+    .about-chip-txt {
+      font-size: 0.65rem;
+      color: var(--muted);
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      margin-top: 0.2rem;
+    }
+
+    .about-text h2 { margin: 0.8rem 0 1.5rem; }
+
+    .about-text p {
+      font-size: 0.92rem;
+      color: var(--sub);
+      font-weight: 300;
+      line-height: 1.9;
+      margin-bottom: 1rem;
+    }
+
+    .feats {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 0.75rem;
+      margin-top: 2rem;
+      padding-top: 2rem;
+      border-top: 1px solid var(--border);
+    }
+
+    .feat {
+      display: flex;
+      align-items: flex-start;
+      gap: 0.6rem;
+      font-size: 0.82rem;
+      color: var(--light);
+    }
+
+    .feat-check {
+      width: 16px;
+      height: 16px;
+      border-radius: 50%;
+      border: 1px solid var(--border);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      flex-shrink: 0;
+      margin-top: 1px;
+      font-size: 0.5rem;
+      color: var(--sub);
+    }
+
+    /* ── TESTIMONIOS ── */
+    #testimonios { background: var(--bg); }
+
+    .test-head {
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-end;
+      margin-bottom: 3rem;
+    }
+
+    .test-rating {
+      font-family: 'Syne', sans-serif;
+      font-weight: 800;
+      font-size: 2.5rem;
+      color: var(--pure);
+      line-height: 1;
+    }
+
+    .test-rating-sub {
+      font-size: 0.72rem;
+      color: var(--muted);
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      margin-top: 0.3rem;
+    }
+
+    .test-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 1rem;
+    }
+
+    .t-card {
+      background: var(--s1);
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      padding: 2rem;
+      transition: border-color 0.35s, transform 0.35s cubic-bezier(.4,0,.2,1), box-shadow 0.35s;
+    }
+
+    .t-card:hover {
+      border-color: rgba(255,255,255,0.15);
+      transform: translateY(-5px);
+      box-shadow: 0 20px 40px rgba(0,0,0,0.4);
+    }
+
+    .t-stars { font-size: 0.75rem; letter-spacing: 0.1em; color: var(--sub); margin-bottom: 1.2rem; }
+    .t-quote { font-size: 0.9rem; color: var(--light); font-weight: 300; line-height: 1.8; margin-bottom: 1.5rem; }
+
+    .t-author {
+      display: flex;
+      align-items: center;
+      gap: 0.75rem;
+      padding-top: 1.2rem;
+      border-top: 1px solid var(--border);
+    }
+
+    .t-av {
+      width: 34px;
+      height: 34px;
+      border-radius: 50%;
+      background: var(--s2);
+      border: 1px solid var(--border);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 0.75rem;
+      font-weight: 600;
+      color: var(--sub);
+      flex-shrink: 0;
+    }
+
+    .t-name { font-size: 0.85rem; font-weight: 500; color: var(--pure); }
+    .t-sub  { font-size: 0.72rem; color: var(--muted); }
+
+    /* ── CONTACTO ── */
+    #contacto { background: var(--s1); }
+
+    .contact-wrap {
+      display: grid;
+      grid-template-columns: 1fr 1.1fr;
+      gap: 5rem;
+      align-items: start;
+    }
+
+    .contact-left h2 { margin: 0.8rem 0 1.2rem; }
+    .contact-left > p { font-size: 0.9rem; color: var(--sub); font-weight: 300; line-height: 1.8; margin-bottom: 2.5rem; }
+
+    .c-items { display: flex; flex-direction: column; gap: 0; }
+
+    .c-item {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 1rem 0;
+      border-bottom: 1px solid var(--border);
+    }
+
+    .c-item:first-child { border-top: 1px solid var(--border); }
+
+    .c-key { font-size: 0.68rem; font-weight: 500; letter-spacing: 0.15em; text-transform: uppercase; color: var(--muted); }
+    .c-val { font-size: 0.88rem; color: var(--light); }
+
+    .c-socials { display: flex; gap: 0.5rem; margin-top: 2rem; }
+
+    .c-social {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.4rem;
+      font-size: 0.72rem;
+      font-weight: 500;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      color: var(--sub);
+      background: rgba(255,255,255,0.04);
+      border: 1px solid var(--border);
+      border-radius: 100px;
+      padding: 0.5rem 1.1rem;
+      text-decoration: none;
+      transition: background 0.2s, color 0.2s;
+    }
+
+    .c-social:hover { background: rgba(255,255,255,0.08); color: var(--pure); }
+
+    /* FORM */
+    .contact-form {
+      background: var(--s2);
+      border: 1px solid var(--border);
+      border-radius: 16px;
+      padding: 2.5rem;
+      display: flex;
+      flex-direction: column;
+      gap: 1.2rem;
+    }
+
+    .form-title {
+      font-family: 'Syne', sans-serif;
+      font-weight: 800;
+      font-size: 1.3rem;
+      letter-spacing: -0.01em;
+      color: var(--pure);
+      margin-bottom: 0.5rem;
+    }
+
+    .f-row { display: grid; grid-template-columns: 1fr 1fr; gap: 1rem; }
+    .f-group { display: flex; flex-direction: column; gap: 0.4rem; }
+
+    .f-group label {
+      font-size: 0.65rem;
+      font-weight: 500;
+      letter-spacing: 0.15em;
+      text-transform: uppercase;
+      color: var(--muted);
+    }
+
+    .f-group input,
+    .f-group select,
+    .f-group textarea {
+      background: rgba(255,255,255,0.04);
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      padding: 0.75rem 1rem;
+      color: var(--pure);
+      font-family: 'Inter', sans-serif;
+      font-size: 0.88rem;
+      font-weight: 300;
+      outline: none;
+      transition: border-color 0.2s, background 0.2s;
+      width: 100%;
+    }
+
+    .f-group input:focus,
+    .f-group select:focus,
+    .f-group textarea:focus {
+      border-color: rgba(255,255,255,0.25);
+      background: rgba(255,255,255,0.06);
+    }
+
+    .f-group select option { background: #181818; }
+    .f-group textarea { resize: none; min-height: 90px; }
+
+    .btn-submit {
+      font-family: 'Syne', sans-serif;
+      font-weight: 700;
+      font-size: 0.82rem;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      background: var(--pure);
+      color: var(--bg);
+      border: none;
+      padding: 1rem;
+      border-radius: 100px;
+      cursor: pointer;
+      transition: opacity 0.2s, transform 0.2s;
+      margin-top: 0.3rem;
+    }
+
+    .btn-submit:hover { opacity: 0.85; transform: scale(0.98); }
+
+    /* ── FOOTER ── */
+    footer {
+      background: var(--bg);
+      border-top: 1px solid var(--border);
+      padding: 2.5rem;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 1.5rem;
+      flex-wrap: wrap;
+    }
+
+    .footer-logo {
+      font-family: 'Syne', sans-serif;
+      font-weight: 800;
+      font-size: 1rem;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      color: var(--pure);
+    }
+
+    .footer-copy { font-size: 0.72rem; color: var(--muted); }
+
+    .footer-links { display: flex; gap: 1.5rem; list-style: none; }
+
+    .footer-links a {
+      font-size: 0.72rem;
+      color: var(--muted);
+      text-decoration: none;
+      transition: color 0.2s;
+    }
+
+    .footer-links a:hover { color: var(--pure); }
+
+    /* ── SCROLL REVEAL ── */
+    .r {
+      opacity: 0;
+      transform: translateY(32px);
+      transition: opacity 0.8s cubic-bezier(.4,0,.2,1), transform 0.8s cubic-bezier(.4,0,.2,1);
+    }
+
+    .r.on { opacity: 1; transform: none; }
+    .r[data-d="1"] { transition-delay: 0.1s; }
+    .r[data-d="2"] { transition-delay: 0.2s; }
+    .r[data-d="3"] { transition-delay: 0.3s; }
+
+    /* stagger for list items */
+    .serv-item { opacity: 0; transform: translateX(-20px); transition: opacity 0.6s cubic-bezier(.4,0,.2,1), transform 0.6s cubic-bezier(.4,0,.2,1), background 0.3s, padding-left 0.3s; }
+    .serv-item.on { opacity: 1; transform: translateX(0); }
+    .serv-item:nth-child(1) { transition-delay: 0.05s; }
+    .serv-item:nth-child(2) { transition-delay: 0.12s; }
+    .serv-item:nth-child(3) { transition-delay: 0.19s; }
+    .serv-item:nth-child(4) { transition-delay: 0.26s; }
+
+    /* ── COUNTER ANIMATION ── */
+    .count { display: inline-block; }
+
+    /* ── MOBILE ── */
+    @media (max-width: 900px) {
+      nav { padding: 1.2rem 1.5rem; }
+      nav.scrolled { padding: 1rem 1.5rem; }
+      .nav-center, .nav-cta { display: none; }
+      .hamburger { display: flex; }
+
+      section { padding: 5rem 1.5rem; }
+
+      #hero {
+        grid-template-columns: 1fr;
+        grid-template-rows: auto auto;
+        min-height: unset;
+        padding-top: 6rem;
+      }
+
+      .hero-left { padding: 2rem 1.5rem; order: 2; }
+      .hero-right { min-height: 55vw; order: 1; }
+      .hero-photo { object-position: center 20%; }
+
+      .serv-head { grid-template-columns: 1fr; }
+      .serv-head p { justify-self: start; }
+      .serv-item { grid-template-columns: 36px 1fr; }
+      .serv-price { grid-column: 2; }
+
+      .gal-grid {
+        grid-template-columns: 1fr 1fr;
+        grid-template-rows: 200px 150px 150px;
+      }
+
+      .g:nth-child(1) { grid-column: span 2; grid-row: span 1; }
+      .g:nth-child(2),
+      .g:nth-child(3),
+      .g:nth-child(4),
+      .g:nth-child(5) { grid-column: span 1; }
+
+      .about-grid { grid-template-columns: 1fr; gap: 3rem; }
+
+      .test-head { flex-direction: column; align-items: flex-start; gap: 1rem; }
+      .test-grid { grid-template-columns: 1fr; }
+
+      .contact-wrap { grid-template-columns: 1fr; gap: 3rem; }
+      .f-row { grid-template-columns: 1fr; }
+
+      footer { flex-direction: column; align-items: flex-start; }
+
+      .hero-stats-bar { flex-wrap: wrap; gap: 1.2rem; }
+    }
+
+    /* mobile drawer */
+    .mob-drawer {
+      display: none;
+      position: fixed;
+      inset: 0;
+      background: rgba(8,8,8,0.97);
+      backdrop-filter: blur(20px);
+      z-index: 98;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      gap: 2rem;
+    }
+
+    .mob-drawer.open { display: flex; }
+
+    .mob-drawer a {
+      font-family: 'Syne', sans-serif;
+      font-weight: 800;
+      font-size: 2.5rem;
+      text-transform: uppercase;
+      letter-spacing: -0.02em;
+      color: rgba(255,255,255,0.45);
+      text-decoration: none;
+      transition: color 0.2s;
+    }
+
+    .mob-drawer a:hover { color: var(--pure); }
+
+    .mob-close {
+      position: absolute;
+      top: 1.5rem;
+      right: 1.5rem;
+      background: rgba(255,255,255,0.06);
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      color: var(--sub);
+      font-size: 1rem;
+      padding: 0.5rem 0.75rem;
+      cursor: pointer;
+    }
+  </style>
+</head>
+<body>
+
+  <!-- LOADER -->
+  <div id="loader">
+    <div class="loader-inner">
+      <div class="loader-logo">Chiky Barber</div>
+      <div class="loader-bar"></div>
+    </div>
+  </div>
+
+  <!-- CURSOR -->
+  <div class="cursor" id="cursor"></div>
+  <div class="cursor-ring" id="cursorRing"></div>
+
+  <!-- NAV -->
+  <nav id="nav">
+    <a href="#hero" class="logo">Chiky Barber</a>
+    <div class="nav-center">
+      <a href="#servicios">Servicios</a>
+      <a href="#galeria">Galería</a>
+      <a href="#about">Nosotros</a>
+      <a href="#contacto">Contacto</a>
+    </div>
+    <a href="#contacto" class="nav-cta">Reservar</a>
+    <button class="hamburger" id="ham" aria-label="Menú">
+      <span></span><span></span><span></span>
+    </button>
+  </nav>
+
+  <div class="mob-drawer" id="drawer">
+    <button class="mob-close" id="drawerClose">✕</button>
+    <a href="#servicios" class="dl">Servicios</a>
+    <a href="#galeria" class="dl">Galería</a>
+    <a href="#about" class="dl">Nosotros</a>
+    <a href="#contacto" class="dl">Reservar</a>
+  </div>
+
+  <!-- HERO -->
+  <section id="hero">
+    <div class="hero-left">
+      <div class="hero-pill">
+        <div class="hero-pill-dot"></div>
+        Disponible para turnos
+      </div>
+      <h1 class="hero-title">
+        <div class="word"><span>Fade</span></div>
+        <div class="word"><span>&amp;</span></div>
+        <div class="word"><span class="outline">Estilo</span></div>
+      </h1>
+      <p class="hero-desc">
+        Cortes de precisión y fades impecables.<br>
+        Tu imagen, nuestra pasión.
+      </p>
+      <div class="hero-actions">
+        <a href="#contacto" class="btn-primary">Reservar turno</a>
+        <a href="#galeria" class="btn-ghost">Ver trabajos</a>
+      </div>
+      <div class="hero-stats-bar">
+        <div class="hstat">
+          <span class="hstat-num"><span class="count" data-target="5">0</span>+</span>
+          <div class="hstat-lbl">Años de experiencia</div>
+        </div>
+        <div class="hstat">
+          <span class="hstat-num"><span class="count" data-target="500">0</span>+</span>
+          <div class="hstat-lbl">Clientes satisfechos</div>
+        </div>
+        <div class="hstat">
+          <span class="hstat-num"><span class="count" data-target="100">0</span>%</span>
+          <div class="hstat-lbl">Dedicación</div>
+        </div>
+      </div>
+    </div>
+    <div class="hero-right">
+      <img src="http://localhost:3456/chiky.jpg" alt="Chiky Barber" class="hero-photo" />
+      <div class="hero-photo-overlay"></div>
+      <div class="hero-photo-tag">
+        <div class="photo-tag-name">Chiky Barber</div>
+        <div class="photo-tag-role">Barbero profesional</div>
+      </div>
+    </div>
+  </section>
+
+  <!-- MARQUEE -->
+  <div class="marquee-wrap">
+    <div class="marquee-track">
+      <span>Fade Clásico</span><span class="dot">·</span>
+      <span>Corte + Barba</span><span class="dot">·</span>
+      <span>Diseño de Líneas</span><span class="dot">·</span>
+      <span>Skin Fade</span><span class="dot">·</span>
+      <span>Mid Fade</span><span class="dot">·</span>
+      <span>Tratamiento Capilar</span><span class="dot">·</span>
+      <span>Buenos Aires</span><span class="dot">·</span>
+      <span>Fade Clásico</span><span class="dot">·</span>
+      <span>Corte + Barba</span><span class="dot">·</span>
+      <span>Diseño de Líneas</span><span class="dot">·</span>
+      <span>Skin Fade</span><span class="dot">·</span>
+      <span>Mid Fade</span><span class="dot">·</span>
+      <span>Tratamiento Capilar</span><span class="dot">·</span>
+      <span>Buenos Aires</span><span class="dot">·</span>
+    </div>
+  </div>
+
+  <!-- SERVICIOS CTA -->
+  <section id="servicios" style="background: var(--s1); padding: 7rem 2.5rem;">
+    <div class="container">
+      <div style="display: grid; grid-template-columns: 1fr 1fr; align-items: center; gap: 4rem;" class="serv-cta-grid r">
+        <div>
+          <div class="tag">Servicios</div>
+          <h2 style="margin: 0.8rem 0 1.5rem;">Fade, cortes<br>y mucho más</h2>
+          <p style="font-size: 0.92rem; color: var(--sub); font-weight: 300; line-height: 1.9; max-width: 360px; margin-bottom: 2.5rem;">
+            Desde fades clásicos hasta diseños artísticos. Explorá todos nuestros servicios y sus precios en detalle.
+          </p>
+          <a href="servicios.html" class="btn-serv-cta">
+            Conocé nuestros servicios
+            <svg width="14" height="14" viewBox="0 0 14 14" fill="none"><path d="M2.5 11.5L11.5 2.5M11.5 2.5H5M11.5 2.5V9" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"/></svg>
+          </a>
+        </div>
+        <div class="serv-preview-list">
+          <div class="serv-preview-item">
+            <span class="serv-num">01</span>
+            <span class="serv-preview-name">Fade Clásico</span>
+            <span class="serv-preview-price">$2.500</span>
+          </div>
+          <div class="serv-preview-item">
+            <span class="serv-num">02</span>
+            <span class="serv-preview-name">Corte + Barba</span>
+            <span class="serv-preview-price">$3.500</span>
+          </div>
+          <div class="serv-preview-item">
+            <span class="serv-num">03</span>
+            <span class="serv-preview-name">Diseño de Líneas</span>
+            <span class="serv-preview-price">$3.000</span>
+          </div>
+          <div class="serv-preview-item blurred">
+            <span class="serv-num">04</span>
+            <span class="serv-preview-name">Tratamiento Capilar</span>
+            <span class="serv-preview-price">$2.000</span>
+          </div>
+          <div class="serv-preview-more">
+            <a href="servicios.html">Ver todos los servicios →</a>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- GALERÍA -->
+  <section id="galeria">
+    <div class="container">
+      <div class="gal-head r">
+        <div>
+          <div class="tag">Portfolio</div>
+          <h2>Nuestros trabajos</h2>
+        </div>
+        <a href="https://www.instagram.com/chikyy_barber/" target="_blank" rel="noopener" class="gal-ig">
+          Ver en Instagram
+          <svg width="12" height="12" viewBox="0 0 12 12" fill="none"><path d="M2.5 9.5L9.5 2.5M9.5 2.5H4M9.5 2.5V8" stroke="currentColor" stroke-width="1.2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+        </a>
+      </div>
+      <div class="gal-grid r">
+        <div class="g">
+          <div class="g-inner"><div class="g-icon">CB</div></div>
+          <div class="g-overlay"><span class="g-label">Fade Skin</span></div>
+        </div>
+        <div class="g">
+          <div class="g-inner"><div class="g-icon">✦</div></div>
+          <div class="g-overlay"><span class="g-label">Corte Moderno</span></div>
+        </div>
+        <div class="g">
+          <div class="g-inner"><div class="g-icon">◈</div></div>
+          <div class="g-overlay"><span class="g-label">Diseño</span></div>
+        </div>
+        <div class="g">
+          <div class="g-inner"><div class="g-icon">▲</div></div>
+          <div class="g-overlay"><span class="g-label">Degradado</span></div>
+        </div>
+        <div class="g">
+          <div class="g-inner"><div class="g-icon">◉</div></div>
+          <div class="g-overlay"><span class="g-label">Mid Fade</span></div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ABOUT -->
+  <section id="about">
+    <div class="container">
+      <div class="about-grid">
+        <div class="about-photo-wrap r">
+          <img src="http://localhost:3456/chiky.jpg" alt="Chiky Barber" class="about-photo" />
+          <div class="about-photo-overlay"></div>
+          <div class="about-chip">
+            <div class="about-chip-num">5+</div>
+            <div class="about-chip-txt">años de<br>experiencia</div>
+          </div>
+        </div>
+        <div class="about-text r" data-d="1">
+          <div class="tag">Quiénes somos</div>
+          <h2>El arte del<br>buen corte</h2>
+          <p>
+            En Chiky Barber creemos que un buen corte es mucho más que estética —
+            es confianza, identidad y actitud. Técnica de precisión con atención
+            personalizada para que salgas con el look que siempre quisiste.
+          </p>
+          <p>
+            Especializados en fades, cortes modernos y diseños artísticos.
+            Cada cliente es único, y cada corte lo refleja.
+          </p>
+          <div class="feats">
+            <div class="feat"><div class="feat-check">✓</div>Fade de alta precisión</div>
+            <div class="feat"><div class="feat-check">✓</div>Atención personalizada</div>
+            <div class="feat"><div class="feat-check">✓</div>Productos premium</div>
+            <div class="feat"><div class="feat-check">✓</div>Ambiente profesional</div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- TESTIMONIOS -->
+  <section id="testimonios">
+    <div class="container">
+      <div class="test-head r">
+        <div>
+          <div class="tag">Testimonios</div>
+          <h2>Lo que dicen<br>nuestros clientes</h2>
+        </div>
+        <div>
+          <div class="test-rating">5.0</div>
+          <div class="test-rating-sub">★★★★★ &nbsp;Calificación promedio</div>
+        </div>
+      </div>
+      <div class="test-grid">
+        <div class="t-card r" data-d="1">
+          <div class="t-stars">★★★★★</div>
+          <p class="t-quote">"El mejor fade que me hicieron en mi vida. Chiky tiene un ojo increíble para los detalles. Salí sintiéndome otro."</p>
+          <div class="t-author">
+            <div class="t-av">M</div>
+            <div>
+              <div class="t-name">Matías R.</div>
+              <div class="t-sub">Cliente frecuente</div>
+            </div>
+          </div>
+        </div>
+        <div class="t-card r" data-d="2">
+          <div class="t-stars">★★★★★</div>
+          <p class="t-quote">"Vine sin saber qué corte quería y Chiky me asesoró perfecto. El resultado fue exactamente lo que buscaba."</p>
+          <div class="t-author">
+            <div class="t-av">L</div>
+            <div>
+              <div class="t-name">Lucas T.</div>
+              <div class="t-sub">Nuevo cliente</div>
+            </div>
+          </div>
+        </div>
+        <div class="t-card r" data-d="3">
+          <div class="t-stars">★★★★★</div>
+          <p class="t-quote">"El diseño de líneas que me hizo es una obra de arte. Ojo al detalle y rapidez. Nunca voy a ir a otra barbería."</p>
+          <div class="t-author">
+            <div class="t-av">F</div>
+            <div>
+              <div class="t-name">Facundo G.</div>
+              <div class="t-sub">Cliente frecuente</div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- CONTACTO -->
+  <section id="contacto">
+    <div class="container">
+      <div class="contact-wrap">
+        <div class="contact-left r">
+          <div class="tag">Reservas</div>
+          <h2>Reservá<br>tu turno</h2>
+          <p>Asegurate tu lugar. También podés escribirnos directo por WhatsApp o Instagram.</p>
+          <div class="c-items">
+            <div class="c-item">
+              <span class="c-key">WhatsApp</span>
+              <span class="c-val">+54 9 11 XXXX-XXXX</span>
+            </div>
+            <div class="c-item">
+              <span class="c-key">Instagram</span>
+              <span class="c-val">@chikyy_barber</span>
+            </div>
+            <div class="c-item">
+              <span class="c-key">Horario</span>
+              <span class="c-val">Lun – Sáb &nbsp;9:00 – 20:00</span>
+            </div>
+            <div class="c-item">
+              <span class="c-key">Ubicación</span>
+              <span class="c-val">Buenos Aires, Argentina</span>
+            </div>
+          </div>
+          <div class="c-socials">
+            <a href="https://www.instagram.com/chikyy_barber/" target="_blank" rel="noopener" class="c-social">Instagram ↗</a>
+            <a href="https://wa.me/5491100000000" target="_blank" rel="noopener" class="c-social">WhatsApp ↗</a>
+          </div>
+        </div>
+
+        <form class="contact-form r" data-d="1" onsubmit="handleSubmit(event)">
+          <div class="form-title">Hacé tu reserva</div>
+          <div class="f-row">
+            <div class="f-group">
+              <label>Nombre</label>
+              <input type="text" placeholder="Tu nombre" required />
+            </div>
+            <div class="f-group">
+              <label>Teléfono</label>
+              <input type="tel" placeholder="Tu número" />
+            </div>
+          </div>
+          <div class="f-group">
+            <label>Servicio</label>
+            <select required>
+              <option value="" disabled selected>Seleccioná un servicio</option>
+              <option>Fade Clásico</option>
+              <option>Corte + Barba</option>
+              <option>Diseño de Líneas</option>
+              <option>Tratamiento Capilar</option>
+            </select>
+          </div>
+          <div class="f-group">
+            <label>Fecha preferida</label>
+            <input type="date" required />
+          </div>
+          <div class="f-group">
+            <label>Mensaje (opcional)</label>
+            <textarea placeholder="Alguna referencia o pedido especial..."></textarea>
+          </div>
+          <button type="submit" class="btn-submit" id="submitBtn">Reservar turno</button>
+        </form>
+      </div>
+    </div>
+  </section>
+
+  <!-- FOOTER -->
+  <footer>
+    <div class="footer-logo">Chiky Barber</div>
+    <div class="footer-copy">© 2026 Chiky Barber · Todos los derechos reservados</div>
+    <ul class="footer-links">
+      <li><a href="#servicios">Servicios</a></li>
+      <li><a href="#galeria">Galería</a></li>
+      <li><a href="https://www.instagram.com/chikyy_barber/" target="_blank" rel="noopener">Instagram</a></li>
+    </ul>
+  </footer>
+
+  <script>
+    // ── LOADER ──
+    window.addEventListener('load', () => {
+      setTimeout(() => {
+        document.getElementById('loader').classList.add('hide');
+      }, 1100);
+    });
+
+    // ── CURSOR ──
+    const cursor = document.getElementById('cursor');
+    const ring   = document.getElementById('cursorRing');
+    let mx = 0, my = 0, rx = 0, ry = 0;
+
+    document.addEventListener('mousemove', e => {
+      mx = e.clientX; my = e.clientY;
+      cursor.style.left = mx + 'px';
+      cursor.style.top  = my + 'px';
+    });
+
+    function animRing() {
+      rx += (mx - rx) * 0.12;
+      ry += (my - ry) * 0.12;
+      ring.style.left = rx + 'px';
+      ring.style.top  = ry + 'px';
+      requestAnimationFrame(animRing);
+    }
+    animRing();
+
+    document.querySelectorAll('a, button, .serv-item, .t-card, .g').forEach(el => {
+      el.addEventListener('mouseenter', () => ring.classList.add('expand'));
+      el.addEventListener('mouseleave', () => ring.classList.remove('expand'));
+    });
+
+    // ── NAV SCROLL ──
+    const nav = document.getElementById('nav');
+    window.addEventListener('scroll', () => {
+      nav.classList.toggle('scrolled', window.scrollY > 50);
+    }, { passive: true });
+
+    // ── MOBILE DRAWER ──
+    document.getElementById('ham').addEventListener('click', () => {
+      document.getElementById('drawer').classList.add('open');
+    });
+    document.getElementById('drawerClose').addEventListener('click', () => {
+      document.getElementById('drawer').classList.remove('open');
+    });
+    document.querySelectorAll('.dl').forEach(a => {
+      a.addEventListener('click', () => document.getElementById('drawer').classList.remove('open'));
+    });
+
+    // ── SCROLL REVEAL ──
+    const io = new IntersectionObserver((entries) => {
+      entries.forEach(e => {
+        if (e.isIntersecting) { e.target.classList.add('on'); io.unobserve(e.target); }
+      });
+    }, { threshold: 0.1 });
+
+    document.querySelectorAll('.r, .serv-item').forEach(el => io.observe(el));
+
+    // ── COUNTER ANIMATION ──
+    const counters = document.querySelectorAll('.count');
+    const counterObserver = new IntersectionObserver((entries) => {
+      entries.forEach(e => {
+        if (!e.isIntersecting) return;
+        const el = e.target;
+        const target = +el.dataset.target;
+        const duration = 1400;
+        const start = performance.now();
+        function step(now) {
+          const progress = Math.min((now - start) / duration, 1);
+          const ease = 1 - Math.pow(1 - progress, 3);
+          el.textContent = Math.floor(ease * target);
+          if (progress < 1) requestAnimationFrame(step);
+          else el.textContent = target;
+        }
+        requestAnimationFrame(step);
+        counterObserver.unobserve(el);
+      });
+    }, { threshold: 0.5 });
+
+    counters.forEach(c => counterObserver.observe(c));
+
+    // ── PARALLAX on hero photo ──
+    const heroPhoto = document.querySelector('.hero-photo');
+    window.addEventListener('scroll', () => {
+      if (heroPhoto) {
+        const y = window.scrollY * 0.25;
+        heroPhoto.style.transform = `scale(1.05) translateY(${y}px)`;
+      }
+    }, { passive: true });
+
+    // ── FORM SUBMIT ──
+    function handleSubmit(e) {
+      e.preventDefault();
+      const btn = document.getElementById('submitBtn');
+      btn.textContent = '✓ Reserva enviada';
+      btn.style.opacity = '0.6';
+      btn.disabled = true;
+      setTimeout(() => {
+        btn.textContent = 'Reservar turno';
+        btn.style.opacity = '';
+        btn.disabled = false;
+        e.target.reset();
+      }, 3000);
+    }
+  </script>
+</body>
+</html>
