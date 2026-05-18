@@ -424,6 +424,221 @@
     }
     .footer-copy { font-size: 0.7rem; color: var(--muted); }
 
+    /* ── BOOKING MODAL ── */
+    .booking-modal {
+      position: fixed;
+      inset: 0;
+      z-index: 9990;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 1.5rem;
+      opacity: 0;
+      visibility: hidden;
+      transition: opacity 0.35s cubic-bezier(.4,0,.2,1), visibility 0.35s;
+    }
+    .booking-modal.open { opacity: 1; visibility: visible; }
+
+    .booking-modal-backdrop {
+      position: absolute;
+      inset: 0;
+      background: rgba(0,0,0,0.88);
+      backdrop-filter: blur(24px);
+      -webkit-backdrop-filter: blur(24px);
+      cursor: pointer;
+    }
+
+    .booking-modal-panel {
+      position: relative;
+      z-index: 1;
+      background: var(--s1);
+      border: 1px solid rgba(255,255,255,0.09);
+      border-radius: 20px;
+      padding: 3rem;
+      max-width: 700px;
+      width: 100%;
+      transform: translateY(28px) scale(0.97);
+      transition: transform 0.38s cubic-bezier(.4,0,.2,1);
+    }
+    .booking-modal.open .booking-modal-panel { transform: none; }
+
+    .booking-modal-close {
+      position: absolute;
+      top: 1.25rem;
+      right: 1.25rem;
+      background: rgba(255,255,255,0.05);
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      color: var(--sub);
+      font-size: 0.85rem;
+      padding: 0.4rem 0.75rem;
+      cursor: pointer;
+      transition: background 0.2s, color 0.2s;
+      font-family: 'Inter', sans-serif;
+      line-height: 1;
+    }
+    .booking-modal-close:hover { background: rgba(255,255,255,0.1); color: var(--pure); }
+
+    .booking-modal-service-chip {
+      display: inline-block;
+      font-size: 0.68rem;
+      font-weight: 500;
+      letter-spacing: 0.1em;
+      color: rgba(255,255,255,0.38);
+      background: rgba(255,255,255,0.05);
+      border: 1px solid var(--border);
+      border-radius: 100px;
+      padding: 0.28rem 0.9rem;
+      margin-bottom: 1.4rem;
+      text-transform: uppercase;
+    }
+
+    .booking-modal h2 {
+      font-family: 'Syne', sans-serif;
+      font-weight: 800;
+      font-size: clamp(1.7rem, 3.5vw, 2.4rem);
+      letter-spacing: -0.02em;
+      text-transform: uppercase;
+      color: var(--pure);
+      line-height: 0.95;
+      margin-bottom: 0.85rem;
+      animation: none;
+      opacity: 1;
+    }
+
+    .booking-modal-subtitle {
+      font-size: 0.88rem;
+      color: var(--sub);
+      font-weight: 300;
+      line-height: 1.7;
+      margin-bottom: 2.5rem;
+    }
+
+    .branch-cards {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 1rem;
+    }
+
+    .branch-card {
+      background: var(--s2);
+      border: 1px solid var(--border);
+      border-radius: 14px;
+      padding: 1.75rem;
+      text-decoration: none;
+      display: flex;
+      flex-direction: column;
+      gap: 0.6rem;
+      position: relative;
+      overflow: hidden;
+      transition: border-color 0.25s, background 0.25s, transform 0.28s cubic-bezier(.4,0,.2,1);
+      cursor: pointer;
+    }
+    .branch-card:not(.branch-card--soon):hover {
+      border-color: rgba(255,255,255,0.2);
+      background: #1f1f1f;
+      transform: translateY(-4px);
+    }
+
+    .branch-card-city {
+      font-size: 0.58rem;
+      font-weight: 500;
+      letter-spacing: 0.22em;
+      text-transform: uppercase;
+      color: var(--muted);
+    }
+
+    .branch-card h3 {
+      font-family: 'Syne', sans-serif;
+      font-weight: 800;
+      font-size: 1.2rem;
+      letter-spacing: -0.01em;
+      color: var(--pure);
+      text-transform: uppercase;
+    }
+
+    .branch-card-desc {
+      font-size: 0.8rem;
+      color: #666;
+      font-weight: 300;
+      line-height: 1.6;
+      flex-grow: 1;
+    }
+
+    .branch-card-cta {
+      margin-top: 1rem;
+      display: inline-flex;
+      align-items: center;
+      gap: 0.45rem;
+      font-family: 'Syne', sans-serif;
+      font-weight: 700;
+      font-size: 0.72rem;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      color: var(--bg);
+      background: var(--pure);
+      border-radius: 100px;
+      padding: 0.65rem 1.25rem;
+      transition: opacity 0.2s, transform 0.2s;
+      border: none;
+      cursor: pointer;
+      text-decoration: none;
+    }
+    .branch-card:not(.branch-card--soon):hover .branch-card-cta { opacity: 0.85; transform: scale(0.97); }
+
+    .branch-card--soon { opacity: 0.42; cursor: not-allowed; }
+    .branch-card--soon:hover { transform: none; }
+
+    .branch-soon-badge {
+      position: absolute;
+      top: 1rem;
+      right: 1rem;
+      font-size: 0.52rem;
+      font-weight: 600;
+      letter-spacing: 0.18em;
+      text-transform: uppercase;
+      color: var(--muted);
+      background: rgba(255,255,255,0.04);
+      border: 1px solid var(--border);
+      border-radius: 100px;
+      padding: 0.22rem 0.65rem;
+    }
+
+    .branch-card--soon .branch-card-cta {
+      color: var(--sub);
+      background: rgba(255,255,255,0.05);
+      border: 1px solid var(--border);
+    }
+
+    /* Integrations note */
+    .booking-integrations-note {
+      margin-top: 1.75rem;
+      padding-top: 1.5rem;
+      border-top: 1px solid var(--border);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 1.5rem;
+      flex-wrap: wrap;
+    }
+    .integration-dot {
+      display: flex;
+      align-items: center;
+      gap: 0.4rem;
+      font-size: 0.62rem;
+      font-weight: 500;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      color: #444;
+    }
+    .integration-dot::before {
+      content: '';
+      width: 5px;
+      height: 5px;
+      background: #333;
+      border-radius: 50%;
+    }
+
     /* ── MOBILE ── */
     @media (max-width: 768px) {
       nav { padding: 1.2rem 1.5rem; }
@@ -441,6 +656,11 @@
 
       .page-cta { padding: 4rem 1.5rem; }
       footer { flex-direction: column; align-items: flex-start; }
+
+      .booking-modal-panel { padding: 2rem 1.25rem; border-radius: 14px; }
+      .booking-modal h2 { font-size: 1.6rem; }
+      .branch-cards { grid-template-columns: 1fr; }
+      .booking-integrations-note { gap: 1rem; }
     }
 
     /* mobile drawer */
@@ -501,6 +721,7 @@
       <a href="index.html#about">Nosotros</a>
       <a href="index.html#contacto">Contacto</a>
       <a href="servicios.html" class="active">Servicios</a>
+      <a href="fidelidad.html">Fidelidad</a>
     </div>
     <a href="index.html" class="nav-back">
       ← Volver
@@ -531,132 +752,72 @@
   </header>
 
   <!-- SERVICIOS -->
-  <main class="servicios-page">
-
-    <!-- CORTES -->
-    <div class="serv-category">
-      <div class="serv-category-label">Cortes de cabello</div>
-
-      <div class="serv-row">
-        <span class="serv-row-num">01</span>
-        <div class="serv-row-info">
-          <div class="serv-row-name">Fade Clásico</div>
-          <div class="serv-row-desc">Degradado suave y preciso desde cero hasta el largo deseado. El clásico que nunca falla y que siempre queda bien.</div>
-        </div>
-        <div class="serv-row-right">
-          <span class="serv-row-price">$2.500</span>
-          <span class="serv-row-duration">~30 min</span>
-        </div>
-      </div>
-
-      <div class="serv-row">
-        <span class="serv-row-num">02</span>
-        <div class="serv-row-info">
-          <div class="serv-row-name">Skin Fade</div>
-          <div class="serv-row-desc">Degradado al ras de la piel. Técnica de alta precisión para un look ultra definido y limpio.</div>
-        </div>
-        <div class="serv-row-right">
-          <span class="serv-row-price">$3.000</span>
-          <span class="serv-row-duration">~40 min</span>
-        </div>
-      </div>
-
-      <div class="serv-row">
-        <span class="serv-row-num">03</span>
-        <div class="serv-row-info">
-          <div class="serv-row-name">Mid Fade</div>
-          <div class="serv-row-desc">El equilibrio perfecto entre volumen arriba y degradado en los laterales. Versátil y siempre moderno.</div>
-        </div>
-        <div class="serv-row-right">
-          <span class="serv-row-price">$2.800</span>
-          <span class="serv-row-duration">~35 min</span>
-        </div>
-      </div>
-
-      <div class="serv-row">
-        <span class="serv-row-num">04</span>
-        <div class="serv-row-info">
-          <div class="serv-row-name">Corte Clásico</div>
-          <div class="serv-row-desc">Corte tradicional con tijera y máquina. Para quien prefiere un estilo más conservador pero igual de cuidado.</div>
-        </div>
-        <div class="serv-row-right">
-          <span class="serv-row-price">$2.200</span>
-          <span class="serv-row-duration">~25 min</span>
-        </div>
-      </div>
-    </div>
-
-    <!-- COMBOS -->
-    <div class="serv-category">
-      <div class="serv-category-label">Combos</div>
-
-      <div class="serv-row">
-        <span class="serv-row-num">05</span>
-        <div class="serv-row-info">
-          <div class="serv-row-name">Corte + Barba</div>
-          <div class="serv-row-desc">El combo más completo. Corte a medida más perfilado, arreglo y delineado de barba con navaja.</div>
-        </div>
-        <div class="serv-row-right">
-          <span class="serv-row-price">$3.500</span>
-          <span class="serv-row-duration">~50 min</span>
-        </div>
-      </div>
-
-      <div class="serv-row">
-        <span class="serv-row-num">06</span>
-        <div class="serv-row-info">
-          <div class="serv-row-name">Fade + Barba + Diseño</div>
-          <div class="serv-row-desc">El paquete premium. Fade, arreglo completo de barba y diseño de líneas personalizado.</div>
-        </div>
-        <div class="serv-row-right">
-          <span class="serv-row-price">$4.500</span>
-          <span class="serv-row-duration">~70 min</span>
-        </div>
-      </div>
-    </div>
-
-    <!-- DISEÑO Y TRATAMIENTOS -->
-    <div class="serv-category">
-      <div class="serv-category-label">Diseño & Tratamientos</div>
-
-      <div class="serv-row">
-        <span class="serv-row-num">07</span>
-        <div class="serv-row-info">
-          <div class="serv-row-name">Diseño de Líneas</div>
-          <div class="serv-row-desc">Arte en tu cabeza. Líneas, curvas y detalles artísticos personalizados que te hacen único y diferente.</div>
-        </div>
-        <div class="serv-row-right">
-          <span class="serv-row-price">$3.000</span>
-          <span class="serv-row-duration">~20 min</span>
-        </div>
-      </div>
-
-      <div class="serv-row">
-        <span class="serv-row-num">08</span>
-        <div class="serv-row-info">
-          <div class="serv-row-name">Arreglo de Barba</div>
-          <div class="serv-row-desc">Perfilado, delineado y forma de barba con navaja. Acabado limpio y profesional.</div>
-        </div>
-        <div class="serv-row-right">
-          <span class="serv-row-price">$1.500</span>
-          <span class="serv-row-duration">~20 min</span>
-        </div>
-      </div>
-
-      <div class="serv-row">
-        <span class="serv-row-num">09</span>
-        <div class="serv-row-info">
-          <div class="serv-row-name">Tratamiento Capilar</div>
-          <div class="serv-row-desc">Hidratación profunda y cuidado del cuero cabelludo con productos premium. Dejá tu cabello saludable y brillante.</div>
-        </div>
-        <div class="serv-row-right">
-          <span class="serv-row-price">$2.000</span>
-          <span class="serv-row-duration">~30 min</span>
-        </div>
-      </div>
-    </div>
-
+  <main class="servicios-page" id="services-main">
+    <div id="services-loading" style="padding:4rem 2rem;text-align:center;color:#444;font-size:0.85rem;letter-spacing:0.08em;">Cargando servicios...</div>
   </main>
+
+  <!-- ══════════════════════════════════════════
+       BOOKING MODAL — Selección de sucursal
+       Para agregar nueva sucursal: duplicar .branch-card
+       y setear data-branch y el href del .branch-card-cta
+  ══════════════════════════════════════════ -->
+  <div id="bookingModal" class="booking-modal" role="dialog" aria-modal="true" aria-labelledby="bookingTitle">
+    <div class="booking-modal-backdrop" id="bookingBackdrop"></div>
+    <div class="booking-modal-panel">
+      <button class="booking-modal-close" id="bookingClose" aria-label="Cerrar">✕</button>
+
+      <!-- Chip con nombre del servicio seleccionado -->
+      <div class="booking-modal-service-chip" id="bookingServiceName">Reservar</div>
+
+      <h2 id="bookingTitle">¿Dónde quieres<br>agendar?</h2>
+      <p class="booking-modal-subtitle">Selecciona la sucursal más conveniente para ti y reserva tu hora en segundos.</p>
+
+      <div class="branch-cards">
+
+        <!-- ── SUCURSAL 1: VIÑA DEL MAR ── -->
+        <a class="branch-card"
+           href="https://agendapro.com/site/cl/aurasalonmalegrooming/chiky-barber/673925"
+           target="_blank"
+           rel="noopener noreferrer"
+           data-branch="vina"
+           id="branchVina">
+          <span class="branch-card-city">Región de Valparaíso</span>
+          <h3>Viña del Mar</h3>
+          <p class="branch-card-desc">Reserva tu hora en nuestra sucursal de Viña del Mar.</p>
+          <span class="branch-card-cta">
+            Agendar Ahora
+            <svg width="12" height="12" viewBox="0 0 12 12" fill="none">
+              <path d="M2 10L10 2M10 2H5M10 2V7" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+            </svg>
+          </span>
+        </a>
+
+        <!-- ── SUCURSAL 2: SANTIAGO ──
+             Cuando esté listo: reemplazar el <div> por <a href="URL_SANTIAGO" ...>
+             y eliminar la clase branch-card--soon -->
+        <div class="branch-card branch-card--soon"
+             data-branch="santiago"
+             id="branchSantiago">
+          <span class="branch-soon-badge">Próximamente</span>
+          <span class="branch-card-city">Región Metropolitana</span>
+          <h3>Santiago</h3>
+          <p class="branch-card-desc">Reserva tu hora en nuestra sucursal de Santiago.</p>
+          <span class="branch-card-cta">Próximamente</span>
+        </div>
+
+      </div>
+
+      <!-- Footer del modal: indicadores de integraciones futuras -->
+      <div class="booking-integrations-note">
+        <!-- EMAIL: integración lista para Resend / SendGrid / SMTP -->
+        <span class="integration-dot">Confirmación por email</span>
+        <!-- CALENDAR: integración lista para Google / Apple / Outlook -->
+        <span class="integration-dot">Sincronización de calendario</span>
+        <!-- TRACKING: eventos de conversión configurados -->
+        <span class="integration-dot">Recordatorios automáticos</span>
+      </div>
+    </div>
+  </div>
 
   <!-- CTA BOTTOM -->
   <div class="page-cta">
@@ -677,6 +838,94 @@
   </footer>
 
   <script>
+    // ══════════════════════════════════════════
+    // SERVICIOS DINÁMICOS — Supabase
+    // ══════════════════════════════════════════
+    const SUPABASE_URL = 'https://xljymxrjejbqynskumwu.supabase.co';
+    const SUPABASE_ANON = 'sb_publishable_0QkYeDhmKK4Ck-AY8fQScg_uyOXJUeO';
+
+    function formatPrice(n) {
+      return '$' + n.toLocaleString('es-CL');
+    }
+
+    function renderServices(services) {
+      const main = document.getElementById('services-main');
+      // Agrupar por categoría manteniendo orden de inserción
+      const cats = {};
+      services.forEach(s => {
+        if (!cats[s.category]) cats[s.category] = [];
+        cats[s.category].push(s);
+      });
+
+      let html = '';
+      let globalIdx = 1;
+      Object.entries(cats).forEach(([cat, items]) => {
+        html += `<div class="serv-category"><div class="serv-category-label">${cat}</div>`;
+        items.forEach(s => {
+          const num = String(globalIdx).padStart(2, '0');
+          html += `
+            <div class="serv-row" style="cursor:pointer">
+              <span class="serv-row-num">${num}</span>
+              <div class="serv-row-info">
+                <div class="serv-row-name">${s.name}</div>
+                ${s.description ? `<div class="serv-row-desc">${s.description}</div>` : ''}
+              </div>
+              <div class="serv-row-right">
+                <span class="serv-row-price">${formatPrice(s.price)}</span>
+                <span class="serv-row-duration">${s.duration} min</span>
+              </div>
+            </div>`;
+          globalIdx++;
+        });
+        html += `</div>`;
+      });
+      main.innerHTML = html;
+
+      // Re-aplicar observers y eventos tras renderizar
+      const io = new IntersectionObserver((entries) => {
+        entries.forEach((e, i) => {
+          if (e.isIntersecting) {
+            setTimeout(() => e.target.classList.add('on'), i * 60);
+            io.unobserve(e.target);
+          }
+        });
+      }, { threshold: 0.08 });
+
+      document.querySelectorAll('.serv-row').forEach(row => {
+        io.observe(row);
+        ring && row.addEventListener('mouseenter', () => ring.classList.add('expand'));
+        ring && row.addEventListener('mouseleave', () => ring.classList.remove('expand'));
+        row.addEventListener('click', () => {
+          const name = row.querySelector('.serv-row-name')?.textContent?.trim() || 'Servicio';
+          openBookingModal(name);
+        });
+      });
+    }
+
+    async function loadServicesFromSupabase() {
+      try {
+        const res = await fetch(
+          `${SUPABASE_URL}/rest/v1/services?active=eq.true&order=category,created_at`,
+          {
+            headers: {
+              'apikey': SUPABASE_ANON,
+              'Authorization': `Bearer ${SUPABASE_ANON}`,
+            }
+          }
+        );
+        if (!res.ok) throw new Error('fetch failed');
+        const data = await res.json();
+        if (data && data.length > 0) renderServices(data);
+        else throw new Error('empty');
+      } catch (e) {
+        // Si falla Supabase, quitar el loader y mostrar mensaje
+        const main = document.getElementById('services-main');
+        main.innerHTML = '<div style="padding:4rem 2rem;text-align:center;color:#444;font-size:0.85rem;">No se pudieron cargar los servicios.</div>';
+      }
+    }
+
+    loadServicesFromSupabase();
+
     // Loader
     window.addEventListener('load', () => {
       setTimeout(() => document.getElementById('loader').classList.add('hide'), 800);
@@ -723,17 +972,110 @@
       a.addEventListener('click', () => document.getElementById('drawer').classList.remove('open'));
     });
 
-    // Scroll reveal para filas
-    const io = new IntersectionObserver((entries) => {
-      entries.forEach((e, i) => {
-        if (e.isIntersecting) {
-          setTimeout(() => e.target.classList.add('on'), i * 60);
-          io.unobserve(e.target);
-        }
-      });
-    }, { threshold: 0.08 });
+    // (serv-row scroll reveal handled dynamically after Supabase load)
 
-    document.querySelectorAll('.serv-row').forEach(el => io.observe(el));
+    // ══════════════════════════════════════════
+    // BOOKING MODAL
+    // ══════════════════════════════════════════
+    const bookingModal     = document.getElementById('bookingModal');
+    const bookingClose     = document.getElementById('bookingClose');
+    const bookingBackdrop  = document.getElementById('bookingBackdrop');
+    const bookingChip      = document.getElementById('bookingServiceName');
+
+    function openBookingModal(serviceName) {
+      bookingChip.textContent = serviceName || 'Reservar';
+      bookingModal.classList.add('open');
+      document.body.style.overflow = 'hidden';
+
+      // ── TRACKING: evento de apertura de modal ──────────────────────
+      // Google Analytics 4
+      if (typeof gtag === 'function') {
+        gtag('event', 'view_booking_modal', {
+          event_category: 'booking',
+          event_label: serviceName
+        });
+      }
+      // Meta Pixel
+      if (typeof fbq === 'function') {
+        fbq('track', 'InitiateCheckout', { content_name: serviceName });
+      }
+    }
+
+    function closeBookingModal() {
+      bookingModal.classList.remove('open');
+      document.body.style.overflow = '';
+    }
+
+    // (click handlers for .serv-row set in renderServices after dynamic load)
+
+    // Cerrar
+    bookingClose.addEventListener('click', closeBookingModal);
+    bookingBackdrop.addEventListener('click', closeBookingModal);
+    document.addEventListener('keydown', e => {
+      if (e.key === 'Escape') closeBookingModal();
+    });
+
+    // ── TRACKING: clic en sucursal ─────────────────────────────────
+    document.getElementById('branchVina').addEventListener('click', () => {
+      const service = bookingChip.textContent;
+      // Google Analytics 4
+      if (typeof gtag === 'function') {
+        gtag('event', 'select_branch', {
+          event_category: 'booking',
+          event_label: 'Viña del Mar',
+          service_name: service
+        });
+      }
+      // Meta Pixel
+      if (typeof fbq === 'function') {
+        fbq('track', 'Schedule', { content_name: service, branch: 'Viña del Mar' });
+      }
+    });
+
+    // ══════════════════════════════════════════
+    // CONFIGURACIÓN PARA FUTURAS INTEGRACIONES
+    // ══════════════════════════════════════════
+    /*
+    const BOOKING_CONFIG = {
+      branches: {
+        vina: {
+          name: 'Viña del Mar',
+          agendaproUrl: 'https://agendapro.com/site/cl/aurasalonmalegrooming/chiky-barber/673925',
+          calendarId: '',            // Google Calendar ID
+          notifyEmail: '',           // Email interno de notificación
+        },
+        santiago: {
+          name: 'Santiago',
+          agendaproUrl: '',          // Pendiente
+          calendarId: '',
+          notifyEmail: '',
+        }
+      },
+
+      // EMAIL (Resend / SendGrid / SMTP)
+      // Usar en una Vercel Serverless Function: /api/booking-confirm.js
+      email: {
+        provider: 'resend',          // 'resend' | 'sendgrid' | 'smtp'
+        from: 'no-reply@aurasalon.cl',
+        templates: {
+          clientConfirm: 'tmpl_client_confirm',
+          internalNotify: 'tmpl_internal_notify',
+        },
+        // Variables dinámicas: {{nombre}}, {{servicio}}, {{fecha}}, {{hora}}, {{sucursal}}
+      },
+
+      // CALENDARIO
+      // Usar Google Calendar API o generar archivo .ics para Apple/Outlook
+      calendar: {
+        googleClientId: '',
+        reminderMinutesBefore: [60, 1440], // 1h y 24h antes
+      },
+
+      // ANALYTICS
+      ga4MeasurementId: '',          // G-XXXXXXXX
+      metaPixelId: '',               // ID de Meta Pixel
+    };
+    */
   </script>
 </body>
 </html>

@@ -1,0 +1,648 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Tarjeta de Fidelidad — Chiky Barber</title>
+  <meta name="description" content="Registrate en el programa de fidelidad de Chiky Barber y acumulá visitas para canjear beneficios exclusivos." />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;500;600;700;800&family=Inter:wght@300;400;500&display=swap" rel="stylesheet" />
+  <style>
+    :root {
+      --bg: #080808;
+      --s1: #0d0d0d;
+      --s2: #111;
+      --border: rgba(255,255,255,0.07);
+      --pure: #ffffff;
+      --muted: #888;
+      --accent: #fff;
+    }
+
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    body {
+      background: var(--bg);
+      color: var(--pure);
+      font-family: 'Inter', sans-serif;
+      min-height: 100vh;
+    }
+
+    /* NAV */
+    nav {
+      position: fixed; top: 0; left: 0; right: 0; z-index: 100;
+      display: flex; align-items: center; justify-content: space-between;
+      padding: 1.4rem 2.5rem;
+      background: transparent;
+      transition: background 0.3s, padding 0.3s, backdrop-filter 0.3s;
+    }
+    nav.scrolled {
+      background: rgba(8,8,8,0.92);
+      backdrop-filter: blur(20px);
+      padding: 1rem 2.5rem;
+      border-bottom: 1px solid var(--border);
+    }
+    .logo {
+      font-family: 'Syne', sans-serif;
+      font-weight: 800;
+      font-size: 1.1rem;
+      letter-spacing: 0.06em;
+      color: var(--pure);
+      text-decoration: none;
+      text-transform: uppercase;
+    }
+    .nav-center { display: flex; gap: 0.25rem; }
+    .nav-center a {
+      color: #aaa;
+      text-decoration: none;
+      font-size: 0.82rem;
+      font-weight: 400;
+      padding: 0.4rem 0.9rem;
+      border-radius: 100px;
+      transition: background 0.2s, color 0.2s;
+      letter-spacing: 0.02em;
+    }
+    .nav-center a:hover, .nav-center a.active { background: rgba(255,255,255,0.08); color: var(--pure); }
+    .nav-cta {
+      background: var(--pure);
+      color: #080808;
+      font-family: 'Syne', sans-serif;
+      font-weight: 700;
+      font-size: 0.75rem;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      text-decoration: none;
+      padding: 0.55rem 1.2rem;
+      border-radius: 100px;
+      transition: opacity 0.2s, transform 0.2s;
+    }
+    .nav-cta:hover { opacity: 0.85; transform: scale(0.97); }
+
+    /* HERO */
+    .hero {
+      padding: 9rem 2rem 5rem;
+      text-align: center;
+      max-width: 640px;
+      margin: 0 auto;
+    }
+    .hero-tag {
+      display: inline-flex; align-items: center; gap: 0.4rem;
+      font-size: 0.7rem; font-weight: 500; letter-spacing: 0.2em;
+      text-transform: uppercase; color: #555;
+      border: 1px solid rgba(255,255,255,0.08);
+      border-radius: 100px; padding: 0.3rem 0.8rem;
+      margin-bottom: 1.5rem;
+    }
+    .hero h1 {
+      font-family: 'Syne', sans-serif;
+      font-weight: 800;
+      font-size: clamp(2.2rem, 6vw, 3.5rem);
+      letter-spacing: -0.02em;
+      line-height: 1.05;
+      margin-bottom: 1.2rem;
+    }
+    .hero p {
+      font-size: 1rem;
+      color: #999;
+      line-height: 1.7;
+      max-width: 480px;
+      margin: 0 auto 2.5rem;
+    }
+
+    /* BENEFITS STRIP */
+    .benefits {
+      display: flex; flex-wrap: wrap; justify-content: center; gap: 1rem;
+      max-width: 780px; margin: 0 auto 5rem;
+      padding: 0 2rem;
+    }
+    .benefit-card {
+      background: var(--s2);
+      border: 1px solid var(--border);
+      border-radius: 14px;
+      padding: 1.4rem 1.5rem;
+      flex: 1; min-width: 180px; max-width: 220px;
+      text-align: center;
+    }
+    .benefit-icon { font-size: 1.5rem; margin-bottom: 0.7rem; }
+    .benefit-visits {
+      font-family: 'Syne', sans-serif;
+      font-size: 1.6rem; font-weight: 800;
+      color: var(--pure); line-height: 1;
+      margin-bottom: 0.3rem;
+    }
+    .benefit-visits span { font-size: 0.7rem; font-weight: 500; letter-spacing: 0.1em; color: #555; }
+    .benefit-label { font-size: 0.8rem; color: #888; line-height: 1.4; }
+
+    /* MAIN FORM SECTION */
+    .section {
+      max-width: 540px;
+      margin: 0 auto;
+      padding: 0 2rem 6rem;
+    }
+
+    /* STATE: form / success */
+    #state-form, #state-success, #state-existing { }
+    #state-success, #state-existing { display: none; }
+
+    .form-card {
+      background: var(--s2);
+      border: 1px solid var(--border);
+      border-radius: 20px;
+      padding: 2rem;
+    }
+    .form-title {
+      font-family: 'Syne', sans-serif;
+      font-size: 1.1rem; font-weight: 700;
+      margin-bottom: 0.4rem;
+    }
+    .form-sub { font-size: 0.82rem; color: #666; margin-bottom: 1.8rem; }
+
+    .field { display: flex; flex-direction: column; gap: 0.4rem; margin-bottom: 1rem; }
+    .field label {
+      font-size: 0.68rem; font-weight: 500;
+      letter-spacing: 0.15em; text-transform: uppercase; color: #555;
+    }
+    .field input {
+      background: #181818;
+      border: 1px solid rgba(255,255,255,0.08);
+      border-radius: 10px;
+      padding: 0.7rem 0.95rem;
+      color: #e8e8e8;
+      font-size: 0.875rem;
+      font-family: 'Inter', sans-serif;
+      outline: none;
+      width: 100%;
+      transition: border-color 0.2s;
+    }
+    .field input:focus { border-color: rgba(255,255,255,0.25); }
+    .field input::placeholder { color: #333; }
+
+    .btn-submit {
+      width: 100%;
+      margin-top: 0.5rem;
+      background: var(--pure);
+      color: #080808;
+      border: none;
+      border-radius: 10px;
+      padding: 0.85rem;
+      font-family: 'Syne', sans-serif;
+      font-weight: 700;
+      font-size: 0.8rem;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      cursor: pointer;
+      transition: opacity 0.2s, transform 0.2s;
+    }
+    .btn-submit:hover { opacity: 0.88; transform: scale(0.99); }
+    .btn-submit:disabled { background: #2a2a2a; color: #555; cursor: not-allowed; transform: none; }
+
+    .error-msg {
+      font-size: 0.78rem;
+      color: #ef4444;
+      margin-top: 0.75rem;
+      display: none;
+    }
+    .error-msg.show { display: block; }
+
+    /* SUCCESS STATE */
+    .success-card {
+      background: var(--s2);
+      border: 1px solid var(--border);
+      border-radius: 20px;
+      padding: 2.5rem 2rem;
+      text-align: center;
+    }
+    .success-icon { font-size: 2.5rem; margin-bottom: 1.2rem; }
+    .success-name {
+      font-family: 'Syne', sans-serif;
+      font-size: 1.4rem; font-weight: 800;
+      margin-bottom: 0.4rem;
+    }
+    .success-sub { font-size: 0.85rem; color: #777; margin-bottom: 1.8rem; }
+
+    .qr-wrap {
+      display: inline-block;
+      background: #fff;
+      border-radius: 14px;
+      padding: 16px;
+      margin-bottom: 1.5rem;
+    }
+    .qr-wrap img { display: block; border-radius: 4px; }
+
+    .card-link-row {
+      display: flex; align-items: center; gap: 0.5rem;
+      background: #181818;
+      border: 1px solid var(--border);
+      border-radius: 10px;
+      padding: 0.6rem 0.8rem;
+      margin-bottom: 1.5rem;
+      cursor: pointer;
+    }
+    .card-link-row span {
+      flex: 1; font-size: 0.78rem; color: #666;
+      text-overflow: ellipsis; overflow: hidden; white-space: nowrap;
+    }
+    .copy-btn {
+      font-size: 0.7rem; font-weight: 600;
+      color: #888; background: none; border: none;
+      cursor: pointer; letter-spacing: 0.05em; text-transform: uppercase;
+      padding: 0.2rem 0.4rem;
+      transition: color 0.2s;
+      flex-shrink: 0;
+    }
+    .copy-btn:hover { color: #fff; }
+
+    .btn-open-card {
+      display: block; width: 100%;
+      background: transparent;
+      border: 1px solid rgba(255,255,255,0.15);
+      border-radius: 10px;
+      padding: 0.75rem;
+      color: #ccc;
+      font-family: 'Syne', sans-serif;
+      font-weight: 600;
+      font-size: 0.78rem;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      text-decoration: none;
+      text-align: center;
+      cursor: pointer;
+      transition: background 0.2s, color 0.2s;
+    }
+    .btn-open-card:hover { background: rgba(255,255,255,0.06); color: #fff; }
+
+    /* EXISTING CARD STATE */
+    .existing-card {
+      background: var(--s2);
+      border: 1px solid var(--border);
+      border-radius: 20px;
+      padding: 2.5rem 2rem;
+      text-align: center;
+    }
+    .existing-icon { font-size: 2rem; margin-bottom: 1rem; }
+    .existing-title {
+      font-family: 'Syne', sans-serif; font-size: 1.1rem; font-weight: 700;
+      margin-bottom: 0.5rem;
+    }
+    .existing-sub { font-size: 0.84rem; color: #777; margin-bottom: 1.5rem; }
+
+    /* LEVELS SECTION */
+    .levels {
+      max-width: 780px; margin: 0 auto 6rem; padding: 0 2rem;
+    }
+    .levels-title {
+      font-family: 'Syne', sans-serif;
+      font-size: 1.5rem; font-weight: 800;
+      text-align: center; margin-bottom: 0.5rem;
+    }
+    .levels-sub { text-align: center; color: #777; font-size: 0.9rem; margin-bottom: 2rem; }
+    .levels-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(160px, 1fr)); gap: 1rem; }
+    .level-card {
+      background: var(--s2); border: 1px solid var(--border);
+      border-radius: 14px; padding: 1.5rem 1.2rem;
+      text-align: center;
+    }
+    .level-card.gold { border-color: rgba(251,191,36,0.25); }
+    .level-card.vip { border-color: rgba(168,85,247,0.3); }
+    .level-badge {
+      font-size: 1.3rem; margin-bottom: 0.6rem;
+    }
+    .level-name {
+      font-family: 'Syne', sans-serif; font-size: 0.9rem; font-weight: 700;
+      margin-bottom: 0.3rem; text-transform: uppercase; letter-spacing: 0.08em;
+    }
+    .level-range { font-size: 0.72rem; color: #555; margin-bottom: 0.6rem; }
+    .level-desc { font-size: 0.78rem; color: #888; line-height: 1.5; }
+
+    /* FAQ */
+    .faq-section { max-width: 600px; margin: 0 auto 6rem; padding: 0 2rem; }
+    .faq-title {
+      font-family: 'Syne', sans-serif; font-size: 1.5rem; font-weight: 800;
+      text-align: center; margin-bottom: 2rem;
+    }
+    .faq-item { border-bottom: 1px solid var(--border); padding: 1.1rem 0; }
+    .faq-q {
+      font-size: 0.9rem; font-weight: 500; cursor: pointer;
+      display: flex; justify-content: space-between; align-items: center;
+      gap: 1rem;
+    }
+    .faq-q:hover { color: #ddd; }
+    .faq-arrow { color: #555; font-size: 0.8rem; flex-shrink: 0; transition: transform 0.2s; }
+    .faq-a { font-size: 0.85rem; color: #777; line-height: 1.7; margin-top: 0.7rem; display: none; }
+    .faq-item.open .faq-a { display: block; }
+    .faq-item.open .faq-arrow { transform: rotate(180deg); }
+
+    /* FOOTER */
+    footer {
+      border-top: 1px solid var(--border);
+      text-align: center;
+      padding: 2rem;
+      font-size: 0.75rem; color: #333;
+    }
+
+    @media (max-width: 640px) {
+      nav { padding: 1rem 1.2rem; }
+      nav.scrolled { padding: 0.9rem 1.2rem; }
+      .nav-center, .nav-cta { display: none; }
+      .hero { padding: 7rem 1.5rem 3rem; }
+      .section, .benefits, .levels, .faq-section { padding-left: 1.2rem; padding-right: 1.2rem; }
+    }
+  </style>
+</head>
+<body>
+
+<nav id="nav">
+  <a href="index.html" class="logo">Chiky Barber</a>
+  <div class="nav-center">
+    <a href="servicios.html">Servicios</a>
+    <a href="index.html#galeria">Galería</a>
+    <a href="index.html#about">Nosotros</a>
+    <a href="fidelidad.html" class="active">Fidelidad</a>
+    <a href="index.html#contacto">Contacto</a>
+  </div>
+  <a href="agendar.html" class="nav-cta">Reservar</a>
+</nav>
+
+<!-- HERO -->
+<section class="hero">
+  <div class="hero-tag">⭐ Programa de Fidelidad</div>
+  <h1>Tu barbería, tus beneficios</h1>
+  <p>Registrate gratis y empezá a acumular visitas. A más cortes, más premios: desde limpiezas faciales hasta cortes completamente gratis.</p>
+</section>
+
+<!-- BENEFITS -->
+<div class="benefits">
+  <div class="benefit-card">
+    <div class="benefit-icon">🎁</div>
+    <div class="benefit-visits">5 <span>VISITAS</span></div>
+    <div class="benefit-label">Limpieza facial gratis</div>
+  </div>
+  <div class="benefit-card">
+    <div class="benefit-icon">✂️</div>
+    <div class="benefit-visits">10 <span>VISITAS</span></div>
+    <div class="benefit-label">20% desc. en tu próximo corte</div>
+  </div>
+  <div class="benefit-card">
+    <div class="benefit-icon">💈</div>
+    <div class="benefit-visits">20 <span>VISITAS</span></div>
+    <div class="benefit-label">Corte profesional gratis</div>
+  </div>
+  <div class="benefit-card">
+    <div class="benefit-icon">👑</div>
+    <div class="benefit-visits">50 <span>VISITAS</span></div>
+    <div class="benefit-label">Pack VIP completo</div>
+  </div>
+</div>
+
+<!-- FORM SECTION -->
+<div class="section">
+  <!-- FORM STATE -->
+  <div id="state-form">
+    <div class="form-card">
+      <div class="form-title">Activar mi tarjeta</div>
+      <div class="form-sub">Ingresá tus datos y recibís tu tarjeta digital al instante.</div>
+      <form id="register-form" autocomplete="off">
+        <div class="field">
+          <label>Nombre completo</label>
+          <input type="text" id="f-name" placeholder="Juan Pérez" required />
+        </div>
+        <div class="field">
+          <label>Email</label>
+          <input type="email" id="f-email" placeholder="juan@email.com" required />
+        </div>
+        <div class="field">
+          <label>Teléfono (opcional)</label>
+          <input type="tel" id="f-phone" placeholder="+54 9 11 1234 5678" />
+        </div>
+        <p class="error-msg" id="form-error"></p>
+        <button type="submit" class="btn-submit" id="btn-submit">Activar tarjeta gratis →</button>
+      </form>
+    </div>
+  </div>
+
+  <!-- SUCCESS STATE -->
+  <div id="state-success">
+    <div class="success-card">
+      <div class="success-icon">🎉</div>
+      <div class="success-name" id="s-name"></div>
+      <div class="success-sub">Tu tarjeta está lista. Mostrala en caja en cada visita.</div>
+      <div class="qr-wrap">
+        <img id="s-qr" src="" alt="QR Tarjeta" width="180" height="180" />
+      </div>
+      <div class="card-link-row" id="copy-row" onclick="copyLink()">
+        <span id="s-link-text"></span>
+        <button class="copy-btn" type="button">Copiar</button>
+      </div>
+      <a id="s-open-btn" href="#" class="btn-open-card" target="_blank">Abrir mi tarjeta →</a>
+    </div>
+  </div>
+
+  <!-- EXISTING CARD STATE -->
+  <div id="state-existing">
+    <div class="existing-card">
+      <div class="existing-icon">💳</div>
+      <div class="existing-title">Ya tenés una tarjeta</div>
+      <div class="existing-sub">Encontramos una tarjeta asociada a ese email.<br>Accedé a tu tarjeta usando el link que te enviamos.</div>
+      <a id="e-open-btn" href="#" class="btn-open-card" target="_blank">Ver mi tarjeta →</a>
+    </div>
+  </div>
+</div>
+
+<!-- LEVELS -->
+<div class="levels">
+  <div class="levels-title">Niveles de membresía</div>
+  <div class="levels-sub">Cuanto más venís, más beneficios desbloqueás.</div>
+  <div class="levels-grid">
+    <div class="level-card">
+      <div class="level-badge">🥉</div>
+      <div class="level-name" style="color:#cd7f32">Bronze</div>
+      <div class="level-range">0 – 9 visitas</div>
+      <div class="level-desc">Acceso a beneficios de entrada y acumulación de puntos.</div>
+    </div>
+    <div class="level-card">
+      <div class="level-badge">🥈</div>
+      <div class="level-name" style="color:#c0c0c0">Silver</div>
+      <div class="level-range">10 – 24 visitas</div>
+      <div class="level-desc">Descuentos exclusivos y acceso prioritario a turnos.</div>
+    </div>
+    <div class="level-card gold">
+      <div class="level-badge">🥇</div>
+      <div class="level-name" style="color:#fbbf24">Gold</div>
+      <div class="level-range">25 – 49 visitas</div>
+      <div class="level-desc">Servicios gratuitos y atención personalizada.</div>
+    </div>
+    <div class="level-card vip">
+      <div class="level-badge">👑</div>
+      <div class="level-name" style="color:#a855f7">VIP</div>
+      <div class="level-range">50+ visitas</div>
+      <div class="level-desc">Pack VIP completo y beneficios de cliente elite.</div>
+    </div>
+  </div>
+</div>
+
+<!-- FAQ -->
+<div class="faq-section">
+  <div class="faq-title">Preguntas frecuentes</div>
+  <div class="faq-item">
+    <div class="faq-q" onclick="toggleFaq(this)">
+      ¿Cómo funciona la tarjeta?
+      <span class="faq-arrow">▼</span>
+    </div>
+    <div class="faq-a">Cada vez que venís a la barbería, el staff registra tu visita escaneando tu QR o buscando tu nombre. Acumulás puntos automáticamente.</div>
+  </div>
+  <div class="faq-item">
+    <div class="faq-q" onclick="toggleFaq(this)">
+      ¿Es gratis registrarse?
+      <span class="faq-arrow">▼</span>
+    </div>
+    <div class="faq-a">Sí, completamente gratis. Solo necesitás tu nombre y email para activar tu tarjeta digital al instante.</div>
+  </div>
+  <div class="faq-item">
+    <div class="faq-q" onclick="toggleFaq(this)">
+      ¿Cómo canjeo mis beneficios?
+      <span class="faq-arrow">▼</span>
+    </div>
+    <div class="faq-a">Cuando llegues al mínimo de visitas requeridas para un premio, avisale al staff en caja. Ellos verifican tu tarjeta y aplican el beneficio.</div>
+  </div>
+  <div class="faq-item">
+    <div class="faq-q" onclick="toggleFaq(this)">
+      ¿Puedo ver mi historial de visitas?
+      <span class="faq-arrow">▼</span>
+    </div>
+    <div class="faq-a">Sí. Tu tarjeta digital muestra todas tus visitas, puntos acumulados y los beneficios disponibles para canjear.</div>
+  </div>
+  <div class="faq-item">
+    <div class="faq-q" onclick="toggleFaq(this)">
+      ¿Perdí mi link de tarjeta, qué hago?
+      <span class="faq-arrow">▼</span>
+    </div>
+    <div class="faq-a">Volvé a completar el formulario con el mismo email. Si ya tenés una tarjeta registrada, te mostramos el link para acceder a ella.</div>
+  </div>
+</div>
+
+<footer>
+  Chiky Barber © 2026 — <a href="index.html" style="color:#555;text-decoration:none">Volver al inicio</a>
+</footer>
+
+<script>
+  const SUPABASE_URL  = 'https://xljymxrjejbqynskumwu.supabase.co'
+  const SUPABASE_ANON = 'sb_publishable_0QkYeDhmKK4Ck-AY8fQScg_uyOXJUeO'
+  const CARD_BASE     = 'https://aura-admin-fawn.vercel.app/card'
+
+  /* NAV scroll */
+  const navEl = document.getElementById('nav')
+  window.addEventListener('scroll', () => {
+    navEl.classList.toggle('scrolled', window.scrollY > 40)
+  })
+
+  /* FAQ toggle */
+  function toggleFaq(el) {
+    el.closest('.faq-item').classList.toggle('open')
+  }
+
+  /* Copy link */
+  function copyLink() {
+    const link = document.getElementById('s-open-btn').href
+    navigator.clipboard.writeText(link).then(() => {
+      const btn = document.querySelector('#copy-row .copy-btn')
+      btn.textContent = '¡Copiado!'
+      setTimeout(() => { btn.textContent = 'Copiar' }, 2000)
+    })
+  }
+
+  /* Show state */
+  function showState(name) {
+    document.getElementById('state-form').style.display     = name === 'form'     ? '' : 'none'
+    document.getElementById('state-success').style.display  = name === 'success'  ? '' : 'none'
+    document.getElementById('state-existing').style.display = name === 'existing' ? '' : 'none'
+  }
+
+  function showSuccess(card) {
+    const cardUrl = `${CARD_BASE}/${card.qr_code}`
+    const qrSrc   = `https://api.qrserver.com/v1/create-qr-code/?size=180x180&data=${encodeURIComponent(cardUrl)}&bgcolor=ffffff&color=080808&margin=0`
+    document.getElementById('s-name').textContent   = `¡Bienvenido/a, ${card.client_name.split(' ')[0]}!`
+    document.getElementById('s-qr').src             = qrSrc
+    document.getElementById('s-link-text').textContent = cardUrl
+    document.getElementById('s-open-btn').href      = cardUrl
+    showState('success')
+  }
+
+  function generateQR(name) {
+    return name.toLowerCase().replace(/\s+/g, '-').replace(/[^a-z0-9-]/g, '') + '-' + Math.random().toString(36).slice(2, 8)
+  }
+
+  /* FORM SUBMIT */
+  document.getElementById('register-form').addEventListener('submit', async (e) => {
+    e.preventDefault()
+    const btn   = document.getElementById('btn-submit')
+    const errEl = document.getElementById('form-error')
+    const name  = document.getElementById('f-name').value.trim()
+    const email = document.getElementById('f-email').value.trim().toLowerCase()
+    const phone = document.getElementById('f-phone').value.trim()
+
+    btn.disabled = true
+    btn.textContent = 'Activando...'
+    errEl.classList.remove('show')
+
+    const headers = {
+      'apikey': SUPABASE_ANON,
+      'Authorization': `Bearer ${SUPABASE_ANON}`,
+      'Content-Type': 'application/json',
+      'Prefer': 'return=representation',
+    }
+
+    try {
+      // Check if card already exists for this email
+      const checkRes = await fetch(
+        `${SUPABASE_URL}/rest/v1/loyalty_cards?client_email=eq.${encodeURIComponent(email)}&select=*`,
+        { headers }
+      )
+      const existing = await checkRes.json()
+
+      if (Array.isArray(existing) && existing.length > 0) {
+        // Already has a card
+        const card = existing[0]
+        document.getElementById('e-open-btn').href = `${CARD_BASE}/${card.qr_code}`
+        showState('existing')
+        return
+      }
+
+      // Create new card
+      const qrCode = generateQR(name)
+      const level  = 'bronze'
+      const payload = {
+        client_name:  name,
+        client_email: email,
+        client_phone: phone || null,
+        qr_code:      qrCode,
+        visits:       0,
+        points:       0,
+        level,
+      }
+
+      const createRes = await fetch(`${SUPABASE_URL}/rest/v1/loyalty_cards`, {
+        method: 'POST',
+        headers,
+        body: JSON.stringify(payload),
+      })
+
+      if (!createRes.ok) {
+        throw new Error('Error al crear la tarjeta.')
+      }
+
+      const created = await createRes.json()
+      const card = Array.isArray(created) ? created[0] : { ...payload, id: qrCode }
+      showSuccess(card)
+
+    } catch (err) {
+      errEl.textContent = err.message || 'Ocurrió un error. Intentá de nuevo.'
+      errEl.classList.add('show')
+      btn.disabled = false
+      btn.textContent = 'Activar tarjeta gratis →'
+    }
+  })
+
+  showState('form')
+</script>
+</body>
+</html>
