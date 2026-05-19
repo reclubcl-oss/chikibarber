@@ -747,11 +747,12 @@
       const phone     = document.getElementById('f-phone').value.trim();
       const birthdate = document.getElementById('f-birthdate').value;
       try {
-        await fetch(SB_URL+'/rest/v1/bookings', {
+        const res = await fetch('https://aura-admin-fawn.vercel.app/api/create-booking', {
           method:'POST',
-          headers:{'apikey':SB_ANON,'Authorization':'Bearer '+SB_ANON,'Content-Type':'application/json','Prefer':'return=minimal'},
-          body: JSON.stringify({ client_name:name, client_email:email, client_phone:phone||null, branch:'santiago', date:BK.date, time:BK.time, status:'pending', price:0, notes:birthdate?'Nacimiento: '+birthdate:null }),
+          headers:{'Content-Type':'application/json'},
+          body: JSON.stringify({ client_name:name, client_email:email, client_phone:phone||null, branch:'santiago', date:BK.date, time:BK.time, notes:birthdate?'Nacimiento: '+birthdate:null }),
         });
+        if (!res.ok) throw new Error('Error al guardar');
         fetch('https://aura-admin-fawn.vercel.app/api/send-booking-email', {
           method:'POST', headers:{'Content-Type':'application/json'},
           body: JSON.stringify({ client_name:name, client_email:email, date:BK.date, time:BK.time, branch:'santiago' }),
