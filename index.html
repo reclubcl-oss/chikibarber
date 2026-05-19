@@ -2367,9 +2367,10 @@
 
         goStep(4);
       } catch (err) {
-        btn.textContent = 'Error — intentá de nuevo';
+        const msg = err?.message || String(err);
+        btn.textContent = 'Error: ' + msg;
         btn.disabled = false;
-        setTimeout(() => { btn.textContent = 'Confirmar reserva'; }, 3000);
+        setTimeout(() => { btn.textContent = 'Confirmar reserva'; }, 6000);
       }
     }
 
