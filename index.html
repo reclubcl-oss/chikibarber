@@ -42,16 +42,13 @@
     /* ── PAGE LOADER ── */
     #loader {
       position: fixed;
-      inset: 0;
-      background: var(--bg);
+      top: 0; left: 0; right: 0; bottom: 0;
+      width: 100%; height: 100%;
+      background: #080808;
       z-index: 9999;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      transition: opacity 0.6s ease, visibility 0.6s ease;
-      /* centrar dentro del área visible en iPhone con notch */
-      padding-top: env(safe-area-inset-top, 0px);
-      padding-bottom: env(safe-area-inset-bottom, 0px);
+      display: grid;
+      place-items: center;
+      transition: opacity 0.9s cubic-bezier(.4,0,.2,1), visibility 0.9s;
     }
 
     #loader.hide { opacity: 0; visibility: hidden; }
@@ -60,48 +57,96 @@
       display: flex;
       flex-direction: column;
       align-items: center;
-      gap: 1.5rem;
+      gap: 2.5rem;
+      width: 100%;
+      padding: 0 2rem;
+      box-sizing: border-box;
+    }
+
+    /* Línea superior decorativa */
+    .loader-line-top {
+      width: 1px;
+      height: 0;
+      background: rgba(255,255,255,0.2);
+      animation: ldrLineGrow 0.6s cubic-bezier(.4,0,.2,1) 0.1s forwards;
+    }
+
+    @keyframes ldrLineGrow {
+      to { height: 40px; }
+    }
+
+    /* Logo principal */
+    .loader-logo-wrap {
+      overflow: hidden;
+      text-align: center;
     }
 
     .loader-logo {
+      display: block;
       font-family: 'Syne', sans-serif;
       font-weight: 800;
-      font-size: 2rem;
-      letter-spacing: 0.15em;
+      font-size: clamp(1.6rem, 8vw, 2.4rem);
+      letter-spacing: 0.3em;
       text-transform: uppercase;
-      color: var(--pure);
-      animation: loaderFade 0.8s ease forwards;
-      /* compensar letter-spacing en el último char para quedar visualmente centrado */
-      margin-right: -0.15em;
+      color: #fff;
+      transform: translateY(100%);
+      animation: ldrSlideUp 0.7s cubic-bezier(.4,0,.2,1) 0.4s forwards;
+      /* Compensar letter-spacing para centrado visual perfecto */
+      padding-left: 0.3em;
     }
 
-    .loader-bar {
-      width: 160px;
+    @keyframes ldrSlideUp {
+      from { transform: translateY(100%); opacity: 0; }
+      to   { transform: translateY(0);    opacity: 1; }
+    }
+
+    /* Subtítulo */
+    .loader-sub {
+      font-family: 'Inter', sans-serif;
+      font-size: 0.62rem;
+      letter-spacing: 0.4em;
+      text-transform: uppercase;
+      color: rgba(255,255,255,0.3);
+      text-align: center;
+      opacity: 0;
+      animation: ldrFadeIn 0.6s ease 0.9s forwards;
+      padding-left: 0.4em;
+    }
+
+    @keyframes ldrFadeIn {
+      to { opacity: 1; }
+    }
+
+    /* Barra de progreso */
+    .loader-progress {
+      width: clamp(80px, 30vw, 120px);
       height: 1px;
-      background: var(--border);
+      background: rgba(255,255,255,0.08);
       position: relative;
       overflow: hidden;
+      opacity: 0;
+      animation: ldrFadeIn 0.4s ease 0.8s forwards;
     }
 
-    .loader-bar::after {
-      content: '';
+    .loader-progress-fill {
       position: absolute;
-      left: -100%;
-      top: 0;
-      width: 100%;
-      height: 100%;
-      background: var(--pure);
-      animation: loaderSlide 1s cubic-bezier(.4,0,.2,1) forwards;
+      inset: 0;
+      background: #fff;
+      transform: scaleX(0);
+      transform-origin: left;
+      animation: ldrProgress 1s cubic-bezier(.4,0,.2,1) 0.85s forwards;
     }
 
-    @keyframes loaderFade {
-      from { opacity: 0; transform: translateY(10px); }
-      to   { opacity: 1; transform: none; }
+    @keyframes ldrProgress {
+      to { transform: scaleX(1); }
     }
 
-    @keyframes loaderSlide {
-      from { left: -100%; }
-      to   { left: 100%; }
+    /* Línea inferior decorativa */
+    .loader-line-bottom {
+      width: 1px;
+      height: 0;
+      background: rgba(255,255,255,0.2);
+      animation: ldrLineGrow 0.6s cubic-bezier(.4,0,.2,1) 0.1s forwards;
     }
 
     /* ── CURSOR ── */
@@ -1334,8 +1379,15 @@
   <!-- LOADER -->
   <div id="loader">
     <div class="loader-inner">
-      <div class="loader-logo">Chiky Barber</div>
-      <div class="loader-bar"></div>
+      <div class="loader-line-top"></div>
+      <div class="loader-logo-wrap">
+        <span class="loader-logo">Chiky Barber</span>
+      </div>
+      <div class="loader-sub">Barbería · Viña del Mar</div>
+      <div class="loader-progress">
+        <div class="loader-progress-fill"></div>
+      </div>
+      <div class="loader-line-bottom"></div>
     </div>
   </div>
 
@@ -1697,7 +1749,7 @@
     window.addEventListener('load', () => {
       setTimeout(() => {
         document.getElementById('loader').classList.add('hide');
-      }, 1100);
+      }, 2200);
     });
 
     // ── CURSOR ──
