@@ -692,11 +692,10 @@
     .gal-ig:hover svg { transform: translate(2px, -2px); }
     .gal-ig svg { transition: transform 0.2s; }
 
+    /* ── GALLERY MASONRY ── */
     .gal-grid {
-      display: grid;
-      grid-template-columns: repeat(12, 1fr);
-      grid-template-rows: 280px 200px;
-      gap: 3px;
+      columns: 3;
+      column-gap: 4px;
     }
 
     .g {
@@ -704,54 +703,90 @@
       overflow: hidden;
       background: var(--s2);
       border-radius: 6px;
+      display: inline-block;
+      width: 100%;
+      margin-bottom: 4px;
+      break-inside: avoid;
+      cursor: zoom-in;
     }
 
-    .g:nth-child(1) { grid-column: span 5; grid-row: span 2; }
-    .g:nth-child(2) { grid-column: span 4; }
-    .g:nth-child(3) { grid-column: span 3; }
-    .g:nth-child(4) { grid-column: span 3; }
-    .g:nth-child(5) { grid-column: span 4; }
+    .g img.gal-photo {
+      display: block;
+      width: 100%;
+      height: auto;
+      transition: transform 0.55s cubic-bezier(.4,0,.2,1);
+    }
 
+    .g:hover img.gal-photo { transform: scale(1.04); }
+
+    /* fallback placeholder (before real photos load) */
     .g-inner {
       width: 100%;
-      height: 100%;
+      aspect-ratio: 4/5;
       display: flex;
       align-items: center;
       justify-content: center;
       background: linear-gradient(135deg, #141414, #1e1e1e);
-      transition: transform 0.6s cubic-bezier(.4,0,.2,1);
     }
 
-    .g:hover .g-inner { transform: scale(1.06); }
-
     .g-icon {
-      font-size: 2.5rem;
+      font-size: 2rem;
       color: rgba(255,255,255,0.04);
       font-family: 'Syne', sans-serif;
       font-weight: 800;
-      letter-spacing: -0.04em;
-      user-select: none;
     }
 
     .g-overlay {
       position: absolute;
       inset: 0;
-      background: linear-gradient(to top, rgba(0,0,0,0.75) 0%, transparent 55%);
+      background: linear-gradient(to top, rgba(0,0,0,0.7) 0%, transparent 50%);
       opacity: 0;
-      transition: opacity 0.35s;
+      transition: opacity 0.3s;
       display: flex;
       align-items: flex-end;
-      padding: 1.2rem;
+      padding: 1rem;
     }
 
     .g:hover .g-overlay { opacity: 1; }
 
     .g-label {
-      font-size: 0.7rem;
+      font-size: 0.68rem;
       font-weight: 600;
       letter-spacing: 0.15em;
       text-transform: uppercase;
       color: var(--white);
+    }
+
+    /* lightbox */
+    #gal-lightbox {
+      display: none;
+      position: fixed;
+      inset: 0;
+      background: rgba(0,0,0,0.92);
+      z-index: 999;
+      align-items: center;
+      justify-content: center;
+      cursor: zoom-out;
+      backdrop-filter: blur(8px);
+    }
+    #gal-lightbox.open { display: flex; }
+    #gal-lightbox img {
+      max-width: min(90vw, 1000px);
+      max-height: 90vh;
+      object-fit: contain;
+      border-radius: 8px;
+      box-shadow: 0 40px 80px rgba(0,0,0,0.6);
+    }
+    #gal-lightbox-close {
+      position: absolute;
+      top: 1.5rem; right: 1.5rem;
+      background: rgba(255,255,255,0.08);
+      border: none; color: #fff;
+      width: 36px; height: 36px;
+      border-radius: 50%;
+      font-size: 1.1rem;
+      cursor: pointer;
+      display: flex; align-items: center; justify-content: center;
     }
 
     /* ── ABOUT ── */
@@ -1141,16 +1176,8 @@
       .serv-item { grid-template-columns: 36px 1fr; }
       .serv-price { grid-column: 2; }
 
-      .gal-grid {
-        grid-template-columns: 1fr 1fr;
-        grid-template-rows: 200px 150px 150px;
-      }
-
-      .g:nth-child(1) { grid-column: span 2; grid-row: span 1; }
-      .g:nth-child(2),
-      .g:nth-child(3),
-      .g:nth-child(4),
-      .g:nth-child(5) { grid-column: span 1; }
+      .gal-grid { columns: 2; }
+      .g { grid-column: unset; grid-row: unset; }
 
       .about-grid { grid-template-columns: 1fr; gap: 3rem; }
 
@@ -1369,26 +1396,11 @@
         </a>
       </div>
       <div class="gal-grid r" id="gal-grid">
-        <div class="g">
-          <div class="g-inner"><div class="g-icon">CB</div></div>
-          <div class="g-overlay"><span class="g-label">Fade Skin</span></div>
-        </div>
-        <div class="g">
-          <div class="g-inner"><div class="g-icon">✦</div></div>
-          <div class="g-overlay"><span class="g-label">Corte Moderno</span></div>
-        </div>
-        <div class="g">
-          <div class="g-inner"><div class="g-icon">◈</div></div>
-          <div class="g-overlay"><span class="g-label">Diseño</span></div>
-        </div>
-        <div class="g">
-          <div class="g-inner"><div class="g-icon">▲</div></div>
-          <div class="g-overlay"><span class="g-label">Degradado</span></div>
-        </div>
-        <div class="g">
-          <div class="g-inner"><div class="g-icon">◉</div></div>
-          <div class="g-overlay"><span class="g-label">Mid Fade</span></div>
-        </div>
+        <div class="g"><div class="g-inner"><div class="g-icon">CB</div></div><div class="g-overlay"><span class="g-label">Fade Skin</span></div></div>
+        <div class="g"><div class="g-inner"><div class="g-icon">✦</div></div><div class="g-overlay"><span class="g-label">Corte Moderno</span></div></div>
+        <div class="g"><div class="g-inner"><div class="g-icon">◈</div></div><div class="g-overlay"><span class="g-label">Diseño</span></div></div>
+        <div class="g"><div class="g-inner"><div class="g-icon">▲</div></div><div class="g-overlay"><span class="g-label">Degradado</span></div></div>
+        <div class="g"><div class="g-inner"><div class="g-icon">◉</div></div><div class="g-overlay"><span class="g-label">Mid Fade</span></div></div>
       </div>
     </div>
   </section>
@@ -1557,6 +1569,12 @@
     </div>
   </section>
 
+  <!-- LIGHTBOX -->
+  <div id="gal-lightbox" onclick="closeLightbox()">
+    <button id="gal-lightbox-close" onclick="closeLightbox()">✕</button>
+    <img id="gal-lightbox-img" src="" alt="" onclick="event.stopPropagation()" />
+  </div>
+
   <!-- FOOTER -->
   <footer>
     <div class="footer-logo">Chiky Barber</div>
@@ -1631,28 +1649,16 @@
           if (!grid) return
           grid.innerHTML = ''
 
-          /* Mosaic layout spans — cycles through patterns */
-          const spans = [
-            { col: 5, row: 2 }, { col: 4, row: 1 }, { col: 3, row: 1 },
-            { col: 3, row: 1 }, { col: 4, row: 1 },
-          ]
-          imgs.slice(0, 10).forEach((img, i) => {
-            const span = spans[i % spans.length]
+          imgs.forEach(img => {
             const el = document.createElement('div')
-            el.className = 'g r'
-            el.style.gridColumn = `span ${span.col}`
-            if (span.row > 1) el.style.gridRow = `span ${span.row}`
+            el.className = 'g'
             el.innerHTML = `
-              <div class="g-inner" style="background-image:url('${img.url}');background-size:cover;background-position:center">
-                ${img.url ? '' : `<div class="g-icon">CB</div>`}
-              </div>
+              <img class="gal-photo" src="${img.url}" alt="${img.alt || ''}" loading="lazy" />
               <div class="g-overlay"><span class="g-label">${img.alt || ''}</span></div>
             `
+            el.addEventListener('click', () => openLightbox(img.url, img.alt || ''))
             grid.appendChild(el)
           })
-
-          /* Re-trigger scroll animations on new elements */
-          if (window._observer) grid.querySelectorAll('.r').forEach(el => window._observer.observe(el))
         } catch {}
       }
 
@@ -1764,6 +1770,19 @@
         e.target.reset();
       }, 3000);
     }
+
+    /* ── LIGHTBOX ── */
+    function openLightbox(src, alt) {
+      document.getElementById('gal-lightbox-img').src = src
+      document.getElementById('gal-lightbox-img').alt = alt
+      document.getElementById('gal-lightbox').classList.add('open')
+      document.body.style.overflow = 'hidden'
+    }
+    function closeLightbox() {
+      document.getElementById('gal-lightbox').classList.remove('open')
+      document.body.style.overflow = ''
+    }
+    document.addEventListener('keydown', e => { if (e.key === 'Escape') closeLightbox() })
   </script>
 </body>
 </html>
