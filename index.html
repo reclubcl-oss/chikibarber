@@ -1990,10 +1990,16 @@
 
         <!-- Step 4: Success -->
         <div class="bk-step" id="bk-step-4" style="display:none; text-align:center; padding: 3rem 1rem;">
-          <div style="font-size:2.5rem; margin-bottom:1rem;">✓</div>
-          <h3 style="font-family:'Syne',sans-serif; font-weight:800; font-size:1.4rem; color:#fff; margin:0 0 0.75rem; text-transform:uppercase; letter-spacing:0.04em;">¡Reserva confirmada!</h3>
+          <div style="font-size:2.8rem; margin-bottom:1rem;">✓</div>
+          <h3 style="font-family:'Syne',sans-serif; font-weight:800; font-size:1.5rem; color:#fff; margin:0 0 0.75rem; text-transform:uppercase; letter-spacing:0.04em;">¡Gracias por tu reserva!</h3>
           <p style="color:#666; font-size:0.88rem; line-height:1.6;" id="bk-confirm-msg"></p>
-          <button onclick="resetBooking()" style="margin-top:2rem; padding:0.7rem 1.5rem; border-radius:8px; border:1px solid rgba(255,255,255,0.12); background:transparent; color:#888; font-size:0.8rem; cursor:pointer;">Nueva reserva</button>
+          <a id="bk-cal-link" href="#" download="reserva-chiky-barber.ics"
+            style="display:inline-flex; align-items:center; gap:0.5rem; margin-top:1.5rem; padding:0.75rem 1.6rem; border-radius:10px; background:#fff; color:#000; font-size:0.82rem; font-weight:700; text-decoration:none; letter-spacing:0.05em; text-transform:uppercase;">
+            <svg width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><rect x="3" y="4" width="18" height="18" rx="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg>
+            Añadir al calendario
+          </a>
+          <br>
+          <button onclick="resetBooking()" style="margin-top:1rem; padding:0.6rem 1.4rem; border-radius:8px; border:1px solid rgba(255,255,255,0.12); background:transparent; color:#555; font-size:0.78rem; cursor:pointer;">Nueva reserva</button>
         </div>
 
       </div><!-- /booking-widget -->
@@ -2363,7 +2369,23 @@
         const [y,mo,d] = BK.date.split('-');
         const branchLabel = BK.branch === 'vina' ? 'Viña del Mar' : 'Santiago';
         document.getElementById('bk-confirm-msg').innerHTML =
-          'Tu reserva para el <strong style="color:#fff">' + parseInt(d) + ' de ' + MONTHS_ES[parseInt(mo)-1] + ' a las ' + BK.time + '</strong> en <strong style="color:#fff">' + branchLabel + '</strong> fue registrada.<br>Revisá tu email — te enviamos la confirmación a <strong style="color:#fff">' + email + '</strong>.';
+          'Tu reserva para el <strong style="color:#fff">' + parseInt(d) + ' de ' + MONTHS_ES[parseInt(mo)-1] + ' a las ' + BK.time + '</strong> en <strong style="color:#fff">' + branchLabel + '</strong> fue registrada.' +
+          (email ? '<br><span style="color:#555;font-size:0.82rem;">Confirmación enviada a ' + email + '</span>' : '');
+
+        // Build .ics for "Add to Calendar" button
+        const pad = n => String(n).padStart(2,'0');
+        const [hh,mm] = BK.time.split(':');
+        const dtS = y+pad(mo)+pad(d)+'T'+pad(hh)+pad(mm)+'00';
+        const dtE = y+pad(mo)+pad(d)+'T'+pad(Number(hh)+1)+pad(mm)+'00';
+        const ics = ['BEGIN:VCALENDAR','VERSION:2.0','PRODID:-//Chiky Barber//ES','BEGIN:VEVENT',
+          'UID:chiky-'+Date.now()+'@chikibarber.cl','DTSTAMP:'+dtS,
+          'DTSTART:'+dtS,'DTEND:'+dtE,
+          'SUMMARY:Chiky Barber — '+branchLabel,
+          'DESCRIPTION:Reserva en Chiky Barber '+branchLabel,
+          'LOCATION:Chiky Barber '+branchLabel,
+          'STATUS:CONFIRMED','END:VEVENT','END:VCALENDAR'].join('\r\n');
+        const blob = new Blob([ics], {type:'text/calendar'});
+        document.getElementById('bk-cal-link').href = URL.createObjectURL(blob);
 
         goStep(4);
       } catch (err) {
