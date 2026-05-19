@@ -306,6 +306,19 @@
       transform: scale(0.97);
     }
 
+    .cal-nav {
+      background: rgba(255,255,255,0.05);
+      border: 1px solid rgba(255,255,255,0.08);
+      border-radius: 8px;
+      color: #888;
+      width: 32px; height: 32px;
+      font-size: 1.1rem;
+      cursor: pointer;
+      display: flex; align-items: center; justify-content: center;
+      transition: background 0.15s, color 0.15s;
+    }
+    .cal-nav:hover { background: rgba(255,255,255,0.1); color: #fff; }
+
     .branch-card--soon {
       opacity: 0.38;
       cursor: not-allowed;
@@ -442,10 +455,7 @@
         </span>
       </a>
 
-      <a class="branch-card"
-         href="/#contacto"
-         data-branch="santiago"
-         id="branchSantiago">
+      <button class="branch-card" onclick="openSantiagoBooking()" data-branch="santiago" id="branchSantiago" style="text-align:left; cursor:pointer; width:100%;">
         <span class="branch-card-city">Región Metropolitana</span>
         <h2>Santiago</h2>
         <p class="branch-card-desc">Reserva tu hora en nuestra sucursal de Santiago.</p>
@@ -455,7 +465,85 @@
             <path d="M2 11L11 2M11 2H5.5M11 2V7.5" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
           </svg>
         </span>
-      </a>
+      </button>
+
+    </div>
+
+    <!-- ── BOOKING WIDGET SANTIAGO (inline) ── -->
+    <div id="bk-container" style="display:none; max-width:580px; margin:2.5rem auto 0; background:#111; border:1px solid rgba(255,255,255,0.08); border-radius:20px; padding:2rem; animation: fadeUp 0.35s ease;">
+
+      <!-- Header -->
+      <div style="display:flex; align-items:center; justify-content:space-between; margin-bottom:1.75rem;">
+        <div>
+          <p style="font-size:0.6rem; letter-spacing:0.2em; color:#444; text-transform:uppercase; margin-bottom:4px;">Sucursal · Santiago</p>
+          <h3 style="font-family:'Syne',sans-serif; font-weight:800; font-size:1.1rem; color:#fff; text-transform:uppercase; letter-spacing:0.04em;">Elegí tu turno</h3>
+        </div>
+        <button onclick="closeSantiagoBooking()" style="background:rgba(255,255,255,0.06); border:1px solid rgba(255,255,255,0.08); border-radius:8px; color:#666; cursor:pointer; padding:0.4rem 0.7rem; font-size:0.9rem; line-height:1;">✕</button>
+      </div>
+
+      <!-- Step 1: Calendar -->
+      <div id="bk-step-1">
+        <div style="font-size:0.6rem; letter-spacing:0.18em; text-transform:uppercase; color:#444; margin-bottom:1.25rem;">01 — Elige una fecha</div>
+        <div style="background:rgba(255,255,255,0.02); border:1px solid rgba(255,255,255,0.06); border-radius:14px; overflow:hidden;">
+          <div style="display:flex; align-items:center; justify-content:space-between; padding:1rem 1.25rem; border-bottom:1px solid rgba(255,255,255,0.06);">
+            <button onclick="calPrev()" class="cal-nav">‹</button>
+            <span id="cal-month-label" style="font-family:'Syne',sans-serif; font-weight:700; font-size:0.88rem; color:#fff; letter-spacing:0.06em; text-transform:uppercase;"></span>
+            <button onclick="calNext()" class="cal-nav">›</button>
+          </div>
+          <div style="display:grid; grid-template-columns:repeat(7,1fr); padding:0.75rem 1rem 0.25rem; gap:4px;">
+            <span style="text-align:center;font-size:0.6rem;letter-spacing:0.1em;text-transform:uppercase;color:#444;font-weight:600;">Lu</span>
+            <span style="text-align:center;font-size:0.6rem;letter-spacing:0.1em;text-transform:uppercase;color:#444;font-weight:600;">Ma</span>
+            <span style="text-align:center;font-size:0.6rem;letter-spacing:0.1em;text-transform:uppercase;color:#444;font-weight:600;">Mi</span>
+            <span style="text-align:center;font-size:0.6rem;letter-spacing:0.1em;text-transform:uppercase;color:#444;font-weight:600;">Ju</span>
+            <span style="text-align:center;font-size:0.6rem;letter-spacing:0.1em;text-transform:uppercase;color:#444;font-weight:600;">Vi</span>
+            <span style="text-align:center;font-size:0.6rem;letter-spacing:0.1em;text-transform:uppercase;color:#444;font-weight:600;">Sa</span>
+            <span style="text-align:center;font-size:0.6rem;letter-spacing:0.1em;text-transform:uppercase;color:#444;font-weight:600;">Do</span>
+          </div>
+          <div id="cal-grid" style="display:grid; grid-template-columns:repeat(7,1fr); padding:0.25rem 1rem 1rem; gap:4px;"></div>
+        </div>
+      </div>
+
+      <!-- Step 2: Time slots -->
+      <div id="bk-step-2" style="display:none;">
+        <div style="font-size:0.6rem; letter-spacing:0.18em; text-transform:uppercase; color:#444; margin-bottom:0.75rem;">02 — Elige una hora</div>
+        <div id="bk-date-display" style="font-size:0.82rem; color:#888; margin-bottom:1.25rem;"></div>
+        <div id="time-grid" style="display:grid; grid-template-columns:repeat(4,1fr); gap:8px; margin-bottom:1.25rem;"></div>
+        <button onclick="bkGoStep(1)" style="background:none;border:none;color:#444;font-size:0.75rem;cursor:pointer;padding:0;">← Cambiar fecha</button>
+      </div>
+
+      <!-- Step 3: Form -->
+      <div id="bk-step-3" style="display:none;">
+        <div style="font-size:0.6rem; letter-spacing:0.18em; text-transform:uppercase; color:#444; margin-bottom:0.75rem;">03 — Tus datos</div>
+        <div id="bk-summary" style="background:rgba(255,255,255,0.03); border:1px solid rgba(255,255,255,0.07); border-radius:10px; padding:0.85rem 1rem; font-size:0.8rem; color:#888; margin-bottom:1.5rem;"></div>
+        <form id="bk-form" onsubmit="bkSubmit(event)">
+          <div style="margin-bottom:1rem;">
+            <label style="font-size:0.62rem;letter-spacing:0.15em;text-transform:uppercase;color:#555;display:block;margin-bottom:4px;">Nombre completo *</label>
+            <input type="text" id="f-name" placeholder="Tu nombre" required style="background:rgba(255,255,255,0.04);border:1px solid rgba(255,255,255,0.08);border-radius:8px;padding:0.75rem 1rem;color:#fff;font-family:'Inter',sans-serif;font-size:0.88rem;outline:none;width:100%;" />
+          </div>
+          <div style="margin-bottom:1rem;">
+            <label style="font-size:0.62rem;letter-spacing:0.15em;text-transform:uppercase;color:#555;display:block;margin-bottom:4px;">Email *</label>
+            <input type="email" id="f-email" placeholder="tu@email.com" required style="background:rgba(255,255,255,0.04);border:1px solid rgba(255,255,255,0.08);border-radius:8px;padding:0.75rem 1rem;color:#fff;font-family:'Inter',sans-serif;font-size:0.88rem;outline:none;width:100%;" />
+          </div>
+          <div style="margin-bottom:1rem;">
+            <label style="font-size:0.62rem;letter-spacing:0.15em;text-transform:uppercase;color:#555;display:block;margin-bottom:4px;">Teléfono</label>
+            <input type="tel" id="f-phone" placeholder="+569..." style="background:rgba(255,255,255,0.04);border:1px solid rgba(255,255,255,0.08);border-radius:8px;padding:0.75rem 1rem;color:#fff;font-family:'Inter',sans-serif;font-size:0.88rem;outline:none;width:100%;" />
+          </div>
+          <div style="margin-bottom:1.5rem;">
+            <label style="font-size:0.62rem;letter-spacing:0.15em;text-transform:uppercase;color:#555;display:block;margin-bottom:4px;">Fecha de nacimiento</label>
+            <input type="date" id="f-birthdate" style="background:rgba(255,255,255,0.04);border:1px solid rgba(255,255,255,0.08);border-radius:8px;padding:0.75rem 1rem;color:#fff;font-family:'Inter',sans-serif;font-size:0.88rem;outline:none;width:100%;color-scheme:dark;" />
+          </div>
+          <button type="submit" id="bk-submit-btn" style="width:100%;font-family:'Syne',sans-serif;font-weight:700;font-size:0.82rem;letter-spacing:0.08em;text-transform:uppercase;background:#fff;color:#080808;border:none;padding:1rem;border-radius:100px;cursor:pointer;">Confirmar reserva</button>
+        </form>
+        <button onclick="bkGoStep(2)" style="background:none;border:none;color:#444;font-size:0.75rem;cursor:pointer;padding:0.5rem 0 0;">← Cambiar hora</button>
+      </div>
+
+      <!-- Step 4: Success -->
+      <div id="bk-step-4" style="display:none; text-align:center; padding:2.5rem 1rem;">
+        <div style="font-size:2rem; margin-bottom:0.75rem;">✓</div>
+        <h3 style="font-family:'Syne',sans-serif;font-weight:800;font-size:1.3rem;color:#fff;text-transform:uppercase;letter-spacing:0.04em;margin-bottom:0.75rem;">¡Reserva confirmada!</h3>
+        <p style="color:#666;font-size:0.85rem;line-height:1.7;" id="bk-confirm-msg"></p>
+        <button onclick="bkReset()" style="margin-top:1.5rem;padding:0.6rem 1.25rem;border-radius:8px;border:1px solid rgba(255,255,255,0.1);background:transparent;color:#666;font-size:0.78rem;cursor:pointer;">Nueva reserva</button>
+      </div>
 
     </div>
 
@@ -551,6 +639,138 @@
         });
       }
     });
+
+    // ── BOOKING WIDGET ──
+    const MONTHS_ES = ['Enero','Febrero','Marzo','Abril','Mayo','Junio','Julio','Agosto','Septiembre','Octubre','Noviembre','Diciembre'];
+    const DAYS_ES   = ['domingo','lunes','martes','miércoles','jueves','viernes','sábado'];
+    const BK_HOURS  = ['09:00','09:30','10:00','10:30','11:00','11:30','12:00','12:30','13:00','14:00','15:00','15:30','16:00','16:30','17:00','17:30','18:00','19:00'];
+    const BK = { date: null, time: null, calYear: new Date().getFullYear(), calMonth: new Date().getMonth(), booked: [] };
+
+    function openSantiagoBooking() {
+      const c = document.getElementById('bk-container');
+      c.style.display = 'block';
+      c.scrollIntoView({ behavior: 'smooth', block: 'start' });
+      bkGoStep(1);
+      renderCal();
+    }
+    function closeSantiagoBooking() {
+      document.getElementById('bk-container').style.display = 'none';
+    }
+    function bkGoStep(n) {
+      [1,2,3,4].forEach(i => {
+        const el = document.getElementById('bk-step-' + i);
+        if (el) el.style.display = i === n ? 'block' : 'none';
+      });
+    }
+
+    function renderCal() {
+      const y = BK.calYear, m = BK.calMonth;
+      document.getElementById('cal-month-label').textContent = MONTHS_ES[m] + ' ' + y;
+      const grid = document.getElementById('cal-grid');
+      grid.innerHTML = '';
+      const offset = (new Date(y, m, 1).getDay() + 6) % 7;
+      const days   = new Date(y, m + 1, 0).getDate();
+      const today  = new Date(); today.setHours(0,0,0,0);
+      for (let i = 0; i < offset; i++) {
+        const el = document.createElement('div'); el.style.cssText = 'aspect-ratio:1'; grid.appendChild(el);
+      }
+      for (let d = 1; d <= days; d++) {
+        const date    = new Date(y, m, d);
+        const dateStr = y + '-' + String(m+1).padStart(2,'0') + '-' + String(d).padStart(2,'0');
+        const past    = date < today;
+        const sun     = date.getDay() === 0;
+        const sel     = BK.date === dateStr;
+        const isToday = date.getTime() === today.getTime();
+        const el = document.createElement('div');
+        el.textContent = d;
+        el.style.cssText = 'aspect-ratio:1;display:flex;align-items:center;justify-content:center;font-size:0.82rem;border-radius:8px;cursor:pointer;border:1px solid transparent;transition:background 0.15s,color 0.15s;';
+        if (sel)        { el.style.background='#fff'; el.style.color='#080808'; el.style.fontWeight='700'; }
+        else if (past||sun) { el.style.color='#2a2a2a'; el.style.cursor='default'; }
+        else if (isToday)   { el.style.color='#fff'; el.style.border='1px solid rgba(255,255,255,0.15)'; }
+        else                { el.style.color='#888'; }
+        if (!past && !sun) el.onclick = () => pickDate(dateStr, date);
+        grid.appendChild(el);
+      }
+    }
+    function calPrev() { if (BK.calMonth===0){BK.calYear--;BK.calMonth=11;}else BK.calMonth--; renderCal(); }
+    function calNext() { if (BK.calMonth===11){BK.calYear++;BK.calMonth=0;}else BK.calMonth++; renderCal(); }
+
+    async function pickDate(dateStr, dateObj) {
+      BK.date = dateStr; renderCal();
+      const SB_URL='https://xljymxrjejbqynskumwu.supabase.co', SB_ANON='sb_publishable_0QkYeDhmKK4Ck-AY8fQScg_uyOXJUeO';
+      try {
+        const r = await fetch(SB_URL+'/rest/v1/bookings?date=eq.'+dateStr+'&branch=eq.santiago&status=neq.cancelled&select=time',
+          { headers: { 'apikey': SB_ANON, 'Authorization': 'Bearer '+SB_ANON } });
+        const data = await r.json();
+        BK.booked = (data||[]).map(b => b.time.slice(0,5));
+      } catch { BK.booked = []; }
+      const [y,mo,d] = dateStr.split('-');
+      const dayName = DAYS_ES[dateObj.getDay()];
+      document.getElementById('bk-date-display').textContent =
+        dayName.charAt(0).toUpperCase()+dayName.slice(1)+', '+parseInt(d)+' de '+MONTHS_ES[parseInt(mo)-1]+' '+y;
+      const tg = document.getElementById('time-grid'); tg.innerHTML = '';
+      BK_HOURS.forEach(h => {
+        const booked = BK.booked.includes(h);
+        const el = document.createElement('div');
+        el.textContent = h;
+        el.style.cssText = 'padding:0.65rem 0.5rem;border-radius:10px;border:1px solid rgba(255,255,255,'+(booked?'0.04':'0.08')+');background:rgba(255,255,255,'+(booked?'0.01':'0.03')+');color:'+(booked?'#2a2a2a':'#888')+';font-size:0.82rem;text-align:center;cursor:'+(booked?'not-allowed':'pointer')+';transition:background 0.15s,color 0.15s;font-weight:500;'+(booked?'text-decoration:line-through;':'');
+        if (!booked) {
+          el.onmouseenter = () => { if (!el.dataset.sel) { el.style.background='rgba(255,255,255,0.08)'; el.style.color='#fff'; } };
+          el.onmouseleave = () => { if (!el.dataset.sel) { el.style.background='rgba(255,255,255,0.03)'; el.style.color='#888'; } };
+          el.onclick = () => pickTime(h);
+        }
+        tg.appendChild(el);
+      });
+      bkGoStep(2);
+    }
+
+    function pickTime(time) {
+      BK.time = time;
+      document.querySelectorAll('#time-grid div').forEach(el => {
+        if (el.textContent === time) {
+          el.style.background='#fff'; el.style.color='#080808'; el.style.fontWeight='700'; el.dataset.sel='1';
+        } else { delete el.dataset.sel; }
+      });
+      const [y,mo,d] = BK.date.split('-');
+      document.getElementById('bk-summary').innerHTML =
+        '<strong style="color:#fff">'+parseInt(d)+' de '+MONTHS_ES[parseInt(mo)-1]+' · '+time+'</strong> &nbsp;·&nbsp; Santiago';
+      bkGoStep(3);
+    }
+
+    async function bkSubmit(e) {
+      e.preventDefault();
+      const btn = document.getElementById('bk-submit-btn');
+      btn.textContent = 'Confirmando...'; btn.disabled = true;
+      const SB_URL='https://xljymxrjejbqynskumwu.supabase.co', SB_ANON='sb_publishable_0QkYeDhmKK4Ck-AY8fQScg_uyOXJUeO';
+      const name      = document.getElementById('f-name').value.trim();
+      const email     = document.getElementById('f-email').value.trim();
+      const phone     = document.getElementById('f-phone').value.trim();
+      const birthdate = document.getElementById('f-birthdate').value;
+      try {
+        await fetch(SB_URL+'/rest/v1/bookings', {
+          method:'POST',
+          headers:{'apikey':SB_ANON,'Authorization':'Bearer '+SB_ANON,'Content-Type':'application/json','Prefer':'return=minimal'},
+          body: JSON.stringify({ client_name:name, client_email:email, client_phone:phone||null, branch:'santiago', date:BK.date, time:BK.time, status:'pending', price:0, notes:birthdate?'Nacimiento: '+birthdate:null }),
+        });
+        fetch('https://aura-admin-fawn.vercel.app/api/send-booking-email', {
+          method:'POST', headers:{'Content-Type':'application/json'},
+          body: JSON.stringify({ client_name:name, client_email:email, date:BK.date, time:BK.time, branch:'santiago' }),
+        }).catch(()=>{});
+        const [y,mo,d] = BK.date.split('-');
+        document.getElementById('bk-confirm-msg').innerHTML =
+          'Tu reserva para el <strong style="color:#fff">'+parseInt(d)+' de '+MONTHS_ES[parseInt(mo)-1]+' a las '+BK.time+'</strong> en <strong style="color:#fff">Santiago</strong> fue registrada.<br>Te enviamos la confirmación a <strong style="color:#fff">'+email+'</strong>.';
+        bkGoStep(4);
+      } catch {
+        btn.textContent = 'Error — intentá de nuevo'; btn.disabled = false;
+        setTimeout(()=>{ btn.textContent='Confirmar reserva'; }, 3000);
+      }
+    }
+
+    function bkReset() {
+      BK.date=null; BK.time=null;
+      document.getElementById('bk-form').reset();
+      bkGoStep(1); renderCal();
+    }
 
     // ══════════════════════════════════════════
     // CONFIGURACIÓN PARA FUTURAS INTEGRACIONES
