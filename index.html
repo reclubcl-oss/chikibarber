@@ -49,6 +49,9 @@
       align-items: center;
       justify-content: center;
       transition: opacity 0.6s ease, visibility 0.6s ease;
+      /* centrar dentro del área visible en iPhone con notch */
+      padding-top: env(safe-area-inset-top, 0px);
+      padding-bottom: env(safe-area-inset-bottom, 0px);
     }
 
     #loader.hide { opacity: 0; visibility: hidden; }
@@ -68,6 +71,8 @@
       text-transform: uppercase;
       color: var(--pure);
       animation: loaderFade 0.8s ease forwards;
+      /* compensar letter-spacing en el último char para quedar visualmente centrado */
+      margin-right: -0.15em;
     }
 
     .loader-bar {
