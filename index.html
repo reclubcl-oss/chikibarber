@@ -1167,11 +1167,16 @@
     ═══════════════════════════════════ */
 
     @media (max-width: 900px) {
-      /* Nav */
-      nav { padding: 1rem 1.25rem; }
+      /* Nav — logo centrado en mobile */
+      nav { padding: 1rem 1.25rem; position: relative; }
       nav.scrolled { padding: 0.85rem 1.25rem; }
       .nav-center, .nav-cta { display: none; }
       .hamburger { display: flex; }
+      .logo {
+        position: absolute;
+        left: 50%;
+        transform: translateX(-50%);
+      }
 
       /* Sections */
       section { padding: 4rem 1.25rem; }
