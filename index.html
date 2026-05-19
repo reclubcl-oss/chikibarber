@@ -1919,14 +1919,14 @@
 
       <!-- Branch tabs -->
       <div class="branch-tabs" style="margin-bottom:2.5rem;">
-        <button class="branch-tab active" data-branch="vina" onclick="switchBranch('vina')">
+        <a class="branch-tab active" href="https://agendapro.com/site/cl/aurasalonmalegrooming/chiky-barber/673925" target="_blank" rel="noopener" style="text-decoration:none;">
           <span class="branch-tab-dot"></span>
           <div>
             <div class="branch-tab-name">Viña del Mar</div>
-            <div class="branch-tab-addr">Lun – Sáb · 9:00 – 19:00</div>
+            <div class="branch-tab-addr">Reservar en AgendaPro ↗</div>
           </div>
-        </button>
-        <button class="branch-tab" data-branch="santiago" onclick="switchBranch('santiago')">
+        </a>
+        <button class="branch-tab active" data-branch="santiago" onclick="switchBranch('santiago')">
           <span class="branch-tab-dot"></span>
           <div>
             <div class="branch-tab-name">Santiago</div>
@@ -2172,7 +2172,7 @@
     // ── FORM SUBMIT ──
     /* ── BOOKING STATE ── */
     const BK = {
-      branch: 'vina',
+      branch: 'santiago',
       date: null,
       time: null,
       calYear: new Date().getFullYear(),
@@ -2345,7 +2345,8 @@
           }),
         });
 
-        await fetch('https://chikibarber-admin.vercel.app/api/send-booking-email', {
+        // Email is fire-and-forget — never blocks the booking confirmation
+        fetch('https://aura-admin-fawn.vercel.app/api/send-booking-email', {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
           body: JSON.stringify({
@@ -2355,7 +2356,7 @@
             time:         BK.time,
             branch:       BK.branch,
           }),
-        });
+        }).catch(() => {});
 
         const [y,mo,d] = BK.date.split('-');
         const branchLabel = BK.branch === 'vina' ? 'Viña del Mar' : 'Santiago';
