@@ -1158,26 +1158,29 @@
       .nav-center, .nav-cta { display: none; }
       .hamburger { display: flex; }
 
-      section { padding: 5rem 1.5rem; }
+      section { padding: 4rem 1.25rem; }
 
       #hero {
         grid-template-columns: 1fr;
         grid-template-rows: auto auto;
         min-height: unset;
         padding-top: 6rem;
+        overflow: hidden;
       }
 
-      .hero-left { padding: 2rem 1.5rem; order: 2; }
+      .hero-left { padding: 2rem 1.25rem; order: 2; }
       .hero-right { min-height: 55vw; order: 1; }
       .hero-photo { object-position: center 20%; }
+
+      .hero-title { font-size: clamp(2.8rem, 11vw, 4rem); }
 
       .serv-head { grid-template-columns: 1fr; }
       .serv-head p { justify-self: start; }
       .serv-item { grid-template-columns: 36px 1fr; }
       .serv-price { grid-column: 2; }
 
-      .gal-grid { columns: 2; }
-      .g { grid-column: unset; grid-row: unset; }
+      .gal-grid { columns: 2; column-gap: 6px; }
+      .g { grid-column: unset; grid-row: unset; margin-bottom: 6px; }
 
       .about-grid { grid-template-columns: 1fr; gap: 3rem; }
 
@@ -1187,9 +1190,28 @@
       .contact-wrap { grid-template-columns: 1fr; gap: 3rem; }
       .f-row { grid-template-columns: 1fr; }
 
-      footer { flex-direction: column; align-items: flex-start; }
+      footer { flex-direction: column; align-items: flex-start; gap: 1.5rem; }
+      .footer-links { flex-wrap: wrap; gap: 1rem; }
 
       .hero-stats-bar { flex-wrap: wrap; gap: 1.2rem; }
+    }
+
+    @media (max-width: 480px) {
+      section { padding: 3.5rem 1rem; }
+
+      .hero-left { padding: 1.5rem 1rem; }
+      .hero-title { font-size: clamp(2.4rem, 12vw, 3.2rem); }
+      .hero-desc { font-size: 0.88rem; }
+      .hero-actions { flex-direction: column; gap: 0.75rem; }
+      .hero-actions a { text-align: center; }
+
+      .gal-grid { columns: 2; column-gap: 4px; }
+      .g { margin-bottom: 4px; }
+
+      .serv-item { padding: 1rem 0; }
+
+      .contact-wrap { gap: 2rem; }
+      textarea { min-height: 100px; }
     }
 
     /* mobile drawer */
