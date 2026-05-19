@@ -2323,6 +2323,13 @@
       const phone     = document.getElementById('f-phone').value.trim();
       const birthdate = document.getElementById('f-birthdate').value;
 
+      if (!BK.date || !BK.time) {
+        btn.textContent = 'Seleccioná fecha y hora primero';
+        btn.disabled = false;
+        setTimeout(() => { btn.textContent = 'Confirmar reserva'; }, 3000);
+        return;
+      }
+
       try {
         const res = await fetch('https://aura-admin-fawn.vercel.app/api/create-booking', {
           method: 'POST',
@@ -2337,7 +2344,8 @@
             notes:        birthdate ? 'Nacimiento: ' + birthdate : null,
           }),
         });
-        if (!res.ok) throw new Error('Error al guardar');
+        const data = await res.json();
+        if (!res.ok) throw new Error(data?.error || 'Error al guardar');
 
         // Email is fire-and-forget
         fetch('https://aura-admin-fawn.vercel.app/api/send-booking-email', {
