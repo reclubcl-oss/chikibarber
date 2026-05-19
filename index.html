@@ -1795,31 +1795,70 @@
           <div class="form-title">Hacé tu reserva</div>
           <div class="f-row">
             <div class="f-group">
-              <label>Nombre</label>
-              <input type="text" placeholder="Tu nombre" required />
+              <label>Nombre *</label>
+              <input type="text" id="f-name" placeholder="Tu nombre completo" required />
             </div>
             <div class="f-group">
               <label>Teléfono</label>
-              <input type="tel" placeholder="Tu número" />
+              <input type="tel" id="f-phone" placeholder="+569..." />
             </div>
           </div>
           <div class="f-group">
-            <label>Servicio</label>
-            <select required>
-              <option value="" disabled selected>Seleccioná un servicio</option>
-              <option>Fade Clásico</option>
-              <option>Corte + Barba</option>
-              <option>Diseño de Líneas</option>
-              <option>Tratamiento Capilar</option>
+            <label>Email *</label>
+            <input type="email" id="f-email" placeholder="tu@email.com" required />
+          </div>
+          <div class="f-group">
+            <label>Sucursal *</label>
+            <select id="f-branch" required>
+              <option value="" disabled selected>Seleccioná una sucursal</option>
+              <option value="vina">Viña del Mar</option>
+              <option value="santiago">Santiago</option>
             </select>
           </div>
           <div class="f-group">
-            <label>Fecha preferida</label>
-            <input type="date" required />
+            <label>Servicio</label>
+            <select id="f-service">
+              <option value="" selected>— Seleccioná un servicio —</option>
+              <option value="Corte Profesional">Corte Profesional — $19.990</option>
+              <option value="Corte de Precisión (Solo Tijera)">Corte de Precisión (Solo Tijera) — $22.990</option>
+              <option value="Arreglo y Diseño de Barba">Arreglo y Diseño de Barba — $14.990</option>
+              <option value="Arreglo de Barba con Toallas Calientes">Arreglo de Barba con Toallas Calientes — $19.990</option>
+              <option value="Corte + Arreglo de Barba (Toallas Calientes)">Corte + Arreglo de Barba (Toallas Calientes) — $34.990</option>
+              <option value="Corte + Arreglo de Barba">Corte + Arreglo de Barba — $29.990</option>
+            </select>
+          </div>
+          <div class="f-row">
+            <div class="f-group">
+              <label>Fecha preferida *</label>
+              <input type="date" id="f-date" required />
+            </div>
+            <div class="f-group">
+              <label>Hora</label>
+              <select id="f-time">
+                <option value="09:00">09:00</option>
+                <option value="09:30">09:30</option>
+                <option value="10:00" selected>10:00</option>
+                <option value="10:30">10:30</option>
+                <option value="11:00">11:00</option>
+                <option value="11:30">11:30</option>
+                <option value="12:00">12:00</option>
+                <option value="12:30">12:30</option>
+                <option value="13:00">13:00</option>
+                <option value="14:00">14:00</option>
+                <option value="15:00">15:00</option>
+                <option value="15:30">15:30</option>
+                <option value="16:00">16:00</option>
+                <option value="16:30">16:30</option>
+                <option value="17:00">17:00</option>
+                <option value="17:30">17:30</option>
+                <option value="18:00">18:00</option>
+                <option value="19:00">19:00</option>
+              </select>
+            </div>
           </div>
           <div class="f-group">
             <label>Mensaje (opcional)</label>
-            <textarea placeholder="Alguna referencia o pedido especial..."></textarea>
+            <textarea id="f-notes" placeholder="Alguna referencia o pedido especial..."></textarea>
           </div>
           <button type="submit" class="btn-submit" id="submitBtn">Reservar turno</button>
         </form>
@@ -1971,18 +2010,91 @@
     }, { passive: true });
 
     // ── FORM SUBMIT ──
-    function handleSubmit(e) {
+    async function handleSubmit(e) {
       e.preventDefault();
       const btn = document.getElementById('submitBtn');
-      btn.textContent = '✓ Reserva enviada';
-      btn.style.opacity = '0.6';
+      btn.textContent = 'Enviando...';
       btn.disabled = true;
-      setTimeout(() => {
-        btn.textContent = 'Reservar turno';
-        btn.style.opacity = '';
-        btn.disabled = false;
-        e.target.reset();
-      }, 3000);
+
+      const SB_URL  = 'https://xljymxrjejbqynskumwu.supabase.co';
+      const SB_ANON = 'sb_publishable_0QkYeDhmKK4Ck-AY8fQScg_uyOXJUeO';
+
+      const name    = document.getElementById('f-name').value.trim();
+      const phone   = document.getElementById('f-phone').value.trim();
+      const email   = document.getElementById('f-email').value.trim();
+      const branch  = document.getElementById('f-branch').value;
+      const service = document.getElementById('f-service').value;
+      const date    = document.getElementById('f-date').value;
+      const time    = document.getElementById('f-time').value;
+      const notes   = document.getElementById('f-notes').value.trim();
+
+      const PRICES = {
+        'Corte Profesional': 19990,
+        'Corte de Precisión (Solo Tijera)': 22990,
+        'Arreglo y Diseño de Barba': 14990,
+        'Arreglo de Barba con Toallas Calientes': 19990,
+        'Corte + Arreglo de Barba (Toallas Calientes)': 34990,
+        'Corte + Arreglo de Barba': 29990,
+      };
+
+      try {
+        // Save to Supabase
+        await fetch(SB_URL + '/rest/v1/bookings', {
+          method: 'POST',
+          headers: {
+            'apikey': SB_ANON,
+            'Authorization': 'Bearer ' + SB_ANON,
+            'Content-Type': 'application/json',
+            'Prefer': 'return=minimal',
+          },
+          body: JSON.stringify({
+            client_name:  name,
+            client_email: email,
+            client_phone: phone || null,
+            service_id:   service || null,
+            branch:       branch,
+            date:         date,
+            time:         time,
+            status:       'pending',
+            price:        PRICES[service] || 0,
+            notes:        notes || null,
+          }),
+        });
+
+        // Send confirmation email via admin API
+        await fetch('https://chikibarber-admin.vercel.app/api/send-booking-email', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({
+            client_name:  name,
+            client_email: email,
+            service_name: service,
+            date:         date,
+            time:         time,
+            branch:       branch,
+            notes:        notes,
+          }),
+        });
+
+        btn.textContent = '✓ Reserva enviada — revisa tu email';
+        btn.style.background = '#22c55e';
+        btn.style.color = '#fff';
+        setTimeout(() => {
+          btn.textContent = 'Reservar turno';
+          btn.style.background = '';
+          btn.style.color = '';
+          btn.disabled = false;
+          e.target.reset();
+        }, 5000);
+      } catch (err) {
+        btn.textContent = 'Error — intentá de nuevo';
+        btn.style.opacity = '0.7';
+        setTimeout(() => {
+          btn.textContent = 'Reservar turno';
+          btn.style.opacity = '';
+          btn.disabled = false;
+        }, 3000);
+      }
     }
 
     /* ── LIGHTBOX ── */
