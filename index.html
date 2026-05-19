@@ -2,7 +2,7 @@
 <html lang="es">
 <head>
   <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
   <title>Chiky Barber</title>
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
@@ -1152,66 +1152,114 @@
     .count { display: inline-block; }
 
     /* ── MOBILE ── */
+    /* ═══════════════════════════════════
+       RESPONSIVE — TABLET & MOBILE
+    ═══════════════════════════════════ */
+
     @media (max-width: 900px) {
-      nav { padding: 1.2rem 1.5rem; }
-      nav.scrolled { padding: 1rem 1.5rem; }
+      /* Nav */
+      nav { padding: 1rem 1.25rem; }
+      nav.scrolled { padding: 0.85rem 1.25rem; }
       .nav-center, .nav-cta { display: none; }
       .hamburger { display: flex; }
 
+      /* Sections */
       section { padding: 4rem 1.25rem; }
 
+      /* Hero — stack vertically */
       #hero {
         grid-template-columns: 1fr;
         grid-template-rows: auto auto;
         min-height: unset;
-        padding-top: 6rem;
+        padding-top: 0;
         overflow: hidden;
       }
-
-      .hero-left { padding: 2rem 1.25rem; order: 2; }
-      .hero-right { min-height: 55vw; order: 1; }
+      .hero-right { order: 1; min-height: 60vw; max-height: 70vw; }
+      .hero-left  { order: 2; padding: 2rem 1.25rem 3rem; }
       .hero-photo { object-position: center 20%; }
+      .hero-photo-overlay {
+        background: linear-gradient(to bottom, transparent 50%, var(--bg) 100%);
+      }
+      .hero-photo-tag { display: none; }
+      .hero-title { font-size: clamp(2.6rem, 10vw, 4rem); }
+      .hero-pill  { margin-bottom: 1.5rem; }
+      .hero-desc  { margin-bottom: 2rem; }
+      .hero-stats-bar { padding-top: 1.5rem; margin-top: 2rem; flex-wrap: wrap; gap: 1.2rem; }
+      .hstat { padding-right: 1.25rem; margin-right: 1.25rem; }
 
-      .hero-title { font-size: clamp(2.8rem, 11vw, 4rem); }
-
-      .serv-head { grid-template-columns: 1fr; }
-      .serv-head p { justify-self: start; }
-      .serv-item { grid-template-columns: 36px 1fr; }
+      /* Servicios */
+      .serv-head { grid-template-columns: 1fr; gap: 1rem; }
+      .serv-head p { justify-self: start; max-width: 100%; }
+      .serv-item { grid-template-columns: 36px 1fr; gap: 1rem; padding: 1.25rem 0.5rem; }
       .serv-price { grid-column: 2; }
+      .serv-name  { font-size: 1.1rem; }
+      .serv-cta-grid { grid-template-columns: 1fr !important; }
 
+      /* Galería */
       .gal-grid { columns: 2; column-gap: 6px; }
-      .g { grid-column: unset; grid-row: unset; margin-bottom: 6px; }
+      .g { margin-bottom: 6px; }
 
+      /* About */
       .about-grid { grid-template-columns: 1fr; gap: 3rem; }
 
+      /* Testimonios */
       .test-head { flex-direction: column; align-items: flex-start; gap: 1rem; }
       .test-grid { grid-template-columns: 1fr; }
 
-      .contact-wrap { grid-template-columns: 1fr; gap: 3rem; }
+      /* Contacto */
+      .contact-wrap { grid-template-columns: 1fr; gap: 2.5rem; }
       .f-row { grid-template-columns: 1fr; }
 
+      /* Footer */
       footer { flex-direction: column; align-items: flex-start; gap: 1.5rem; }
       .footer-links { flex-wrap: wrap; gap: 1rem; }
-
-      .hero-stats-bar { flex-wrap: wrap; gap: 1.2rem; }
     }
 
     @media (max-width: 480px) {
-      section { padding: 3.5rem 1rem; }
+      /* Más compacto en teléfonos chicos */
+      section { padding: 3rem 1rem; }
 
-      .hero-left { padding: 1.5rem 1rem; }
-      .hero-title { font-size: clamp(2.4rem, 12vw, 3.2rem); }
-      .hero-desc { font-size: 0.88rem; }
+      /* Hero */
+      .hero-right { min-height: 55vw; max-height: 65vw; }
+      .hero-left  { padding: 1.5rem 1rem 2.5rem; }
+      .hero-title { font-size: clamp(2.2rem, 12vw, 3rem); }
+      .hero-desc  { font-size: 0.88rem; }
       .hero-actions { flex-direction: column; gap: 0.75rem; }
-      .hero-actions a { text-align: center; }
+      .btn-primary,
+      .btn-ghost  { text-align: center; width: 100%; padding: 1rem 1.5rem; }
+      .hero-stats-bar { gap: 1rem; }
+      .hstat-num  { font-size: 1.5rem; }
 
-      .gal-grid { columns: 2; column-gap: 4px; }
-      .g { margin-bottom: 4px; }
+      /* Servicios */
+      .serv-item  { padding: 1rem 0.25rem; }
+      .serv-name  { font-size: 1rem; }
 
-      .serv-item { padding: 1rem 0; }
+      /* Galería — sigue en 2 cols pero con gap mínimo */
+      .gal-grid   { columns: 2; column-gap: 3px; }
+      .g          { margin-bottom: 3px; border-radius: 4px; }
 
+      /* Inputs — mínimo 16px para evitar zoom en iOS */
+      input, select, textarea {
+        font-size: 16px !important;
+      }
+
+      /* Contacto */
       .contact-wrap { gap: 2rem; }
-      textarea { min-height: 100px; }
+
+      /* Footer más compacto */
+      footer { gap: 1.25rem; }
+      .footer-links { gap: 0.75rem; }
+    }
+
+    /* Safe area para iPhone con notch / Dynamic Island */
+    @supports (padding-bottom: env(safe-area-inset-bottom)) {
+      footer {
+        padding-bottom: calc(2rem + env(safe-area-inset-bottom));
+      }
+      nav {
+        padding-left:  max(1.25rem, env(safe-area-inset-left));
+        padding-right: max(1.25rem, env(safe-area-inset-right));
+      }
     }
 
     /* mobile drawer */
