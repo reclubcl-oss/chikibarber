@@ -1234,6 +1234,7 @@
       cursor: pointer;
     }
   </style>
+  <script src="config.js" defer></script>
 </head>
 <body>
 
@@ -1588,81 +1589,27 @@
   </footer>
 
   <script>
-    /* ── SUPABASE DYNAMIC CONTENT ── */
+    /* ── GALLERY (index-specific) ── */
     ;(async function() {
       const SB_URL  = 'https://xljymxrjejbqynskumwu.supabase.co'
       const SB_ANON = 'sb_publishable_0QkYeDhmKK4Ck-AY8fQScg_uyOXJUeO'
-      const H = { 'apikey': SB_ANON, 'Authorization': `Bearer ${SB_ANON}` }
-
-      /* Apply site_config: colors, fonts, hero image */
-      async function applyConfig() {
-        try {
-          const r = await fetch(`${SB_URL}/rest/v1/site_config?select=key,value`, { headers: H })
-          if (!r.ok) return
-          const rows = await r.json()
-          if (!Array.isArray(rows) || !rows.length) return
-          const cfg = {}
-          rows.forEach(({ key, value }) => { cfg[key] = value })
-
-          const root = document.documentElement
-          if (cfg.color_bg)     root.style.setProperty('--bg', cfg.color_bg)
-          if (cfg.color_s1)     root.style.setProperty('--s1', cfg.color_s1)
-          if (cfg.color_s1)     root.style.setProperty('--s2', cfg.color_s1)
-          if (cfg.color_accent) root.style.setProperty('--pure', cfg.color_accent)
-          if (cfg.color_text)   root.style.setProperty('--white', cfg.color_text)
-
-          /* Fonts */
-          if (cfg.font_heading || cfg.font_body) {
-            const families = []
-            if (cfg.font_heading) families.push(encodeURIComponent(cfg.font_heading) + ':wght@400;600;700;800')
-            if (cfg.font_body)    families.push(encodeURIComponent(cfg.font_body) + ':wght@300;400;500')
-            const link = document.createElement('link')
-            link.rel  = 'stylesheet'
-            link.href = `https://fonts.googleapis.com/css2?${families.map(f=>'family='+f).join('&')}&display=swap`
-            document.head.appendChild(link)
-            if (cfg.font_heading) {
-              root.style.setProperty('--font-heading', `'${cfg.font_heading}', sans-serif`)
-              document.querySelectorAll('[style*="Syne"]').forEach(el => {
-                el.style.fontFamily = `'${cfg.font_heading}', sans-serif`
-              })
-            }
-            if (cfg.font_body) document.body.style.fontFamily = `'${cfg.font_body}', sans-serif`
-          }
-
-          /* Hero image */
-          if (cfg.hero_image) {
-            const imgs = document.querySelectorAll('.hero-photo, .about-photo')
-            imgs.forEach(img => { img.src = cfg.hero_image })
-          }
-        } catch {}
-      }
-
-      /* Load gallery images */
-      async function loadGallery() {
-        try {
-          const r = await fetch(`${SB_URL}/rest/v1/gallery_images?active=eq.true&order=sort_order`, { headers: H })
-          if (!r.ok) return
-          const imgs = await r.json()
-          if (!Array.isArray(imgs) || !imgs.length) return
-
-          const grid = document.getElementById('gal-grid')
-          if (!grid) return
-          grid.innerHTML = ''
-
-          imgs.forEach(img => {
-            const el = document.createElement('div')
-            el.className = 'g'
-            el.innerHTML = `
-              <img class="gal-photo" src="${img.url}" alt="${img.alt || ''}" loading="lazy" />
-              <div class="g-overlay"><span class="g-label">${img.alt || ''}</span></div>
-            `
-            el.addEventListener('click', () => openLightbox(img.url, img.alt || ''))
-            grid.appendChild(el)
-          })
-        } catch {}
-      }
-
-      await Promise.all([applyConfig(), loadGallery()])
+      const H = { 'apikey': SB_ANON, 'Authorization': 'Bearer ' + SB_ANON }
+      try {
+        const r = await fetch(SB_URL + '/rest/v1/gallery_images?active=eq.true&order=sort_order', { headers: H })
+        if (!r.ok) return
+        const imgs = await r.json()
+        if (!Array.isArray(imgs) || !imgs.length) return
+        const grid = document.getElementById('gal-grid')
+        if (!grid) return
+        grid.innerHTML = ''
+        imgs.forEach(function(img) {
+          const el = document.createElement('div')
+          el.className = 'g'
+          el.innerHTML = '<img class="gal-photo" src="' + img.url + '" alt="' + (img.alt||'') + '" loading="lazy" /><div class="g-overlay"><span class="g-label">' + (img.alt||'') + '</span></div>'
+          el.addEventListener('click', function() { openLightbox(img.url, img.alt||'') })
+          grid.appendChild(el)
+        })
+      } catch(e) {}
     })()
 
     // ── LOADER ──

@@ -1,0 +1,597 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Agendar — AURA Salón & Male Grooming</title>
+  <meta name="description" content="Reserva tu hora en AURA Salón & Male Grooming. Selecciona tu sucursal en Viña del Mar o Santiago." />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;500;600;700;800&family=Inter:wght@300;400;500&display=swap" rel="stylesheet" />
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    :root {
+      --bg:     #080808;
+      --s1:     #101010;
+      --s2:     #181818;
+      --border: rgba(255,255,255,0.07);
+      --muted:  #666;
+      --sub:    #999;
+      --white:  #f2f2f2;
+      --pure:   #fff;
+    }
+
+    html { scroll-behavior: smooth; }
+
+    body {
+      background: var(--bg);
+      color: var(--white);
+      font-family: 'Inter', sans-serif;
+      font-size: 16px;
+      line-height: 1.6;
+      overflow-x: hidden;
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+    }
+
+    /* ── LOADER ── */
+    #loader {
+      position: fixed;
+      inset: 0;
+      background: var(--bg);
+      z-index: 9999;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      transition: opacity 0.5s ease, visibility 0.5s ease;
+    }
+    #loader.hide { opacity: 0; visibility: hidden; }
+    .loader-logo {
+      font-family: 'Syne', sans-serif;
+      font-weight: 800;
+      font-size: 1.8rem;
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+      color: var(--pure);
+      animation: fadeUp 0.6s ease forwards;
+    }
+    @keyframes fadeUp {
+      from { opacity: 0; transform: translateY(10px); }
+      to   { opacity: 1; transform: none; }
+    }
+
+    /* ── CURSOR ── */
+    .cursor {
+      position: fixed;
+      width: 8px; height: 8px;
+      background: var(--pure);
+      border-radius: 50%;
+      pointer-events: none;
+      z-index: 9998;
+      transform: translate(-50%, -50%);
+    }
+    .cursor-ring {
+      position: fixed;
+      width: 36px; height: 36px;
+      border: 1px solid rgba(255,255,255,0.3);
+      border-radius: 50%;
+      pointer-events: none;
+      z-index: 9997;
+      transform: translate(-50%, -50%);
+      transition: transform 0.35s cubic-bezier(.4,0,.2,1), width 0.3s, height 0.3s, opacity 0.3s;
+    }
+    .cursor-ring.expand { width: 54px; height: 54px; opacity: 0.5; }
+    @media (hover: none) { .cursor, .cursor-ring { display: none; } }
+
+    /* ── NAV ── */
+    nav {
+      position: fixed;
+      top: 0; left: 0; right: 0;
+      z-index: 100;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 1.5rem 2.5rem;
+      transition: all 0.4s cubic-bezier(.4,0,.2,1);
+    }
+    nav.scrolled {
+      padding: 1rem 2.5rem;
+      background: rgba(8,8,8,0.85);
+      backdrop-filter: blur(20px);
+      border-bottom: 1px solid var(--border);
+    }
+    .logo {
+      font-family: 'Syne', sans-serif;
+      font-weight: 800;
+      font-size: 1.1rem;
+      letter-spacing: 0.08em;
+      color: var(--pure);
+      text-decoration: none;
+      text-transform: uppercase;
+    }
+    .nav-back {
+      font-family: 'Syne', sans-serif;
+      font-weight: 700;
+      font-size: 0.78rem;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      color: var(--sub);
+      background: rgba(255,255,255,0.05);
+      border: 1px solid var(--border);
+      padding: 0.6rem 1.2rem;
+      border-radius: 100px;
+      text-decoration: none;
+      display: flex;
+      align-items: center;
+      gap: 0.4rem;
+      transition: background 0.2s, color 0.2s;
+    }
+    .nav-back:hover { background: rgba(255,255,255,0.1); color: var(--pure); }
+
+    /* ── MAIN ── */
+    main {
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      padding: 8rem 2rem 5rem;
+      min-height: 100vh;
+    }
+
+    /* ── WATERMARK ── */
+    .page-watermark {
+      position: fixed;
+      right: -3rem;
+      bottom: 10%;
+      font-family: 'Syne', sans-serif;
+      font-weight: 800;
+      font-size: clamp(7rem, 18vw, 18rem);
+      letter-spacing: -0.04em;
+      color: rgba(255,255,255,0.018);
+      pointer-events: none;
+      white-space: nowrap;
+      user-select: none;
+      line-height: 1;
+    }
+
+    /* ── HEADER ── */
+    .booking-header {
+      text-align: center;
+      max-width: 560px;
+      margin-bottom: 3.5rem;
+      opacity: 0;
+      animation: fadeUp 0.7s cubic-bezier(.4,0,.2,1) forwards;
+      animation-delay: 0.9s;
+    }
+
+    .tag {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.5rem;
+      font-size: 0.62rem;
+      font-weight: 500;
+      letter-spacing: 0.22em;
+      text-transform: uppercase;
+      color: var(--muted);
+      margin-bottom: 1.2rem;
+    }
+    .tag::before { content: ''; width: 14px; height: 1px; background: var(--muted); }
+
+    .booking-header h1 {
+      font-family: 'Syne', sans-serif;
+      font-weight: 800;
+      font-size: clamp(2.8rem, 6vw, 4.5rem);
+      letter-spacing: -0.03em;
+      text-transform: uppercase;
+      color: var(--pure);
+      line-height: 0.93;
+      margin-bottom: 1.25rem;
+      animation: none;
+      opacity: 1;
+    }
+
+    .booking-header p {
+      font-size: 0.9rem;
+      color: var(--sub);
+      font-weight: 300;
+      line-height: 1.8;
+    }
+
+    /* ── SERVICE CHIP (cuando viene con ?service=...) ── */
+    .service-chip {
+      display: inline-block;
+      font-size: 0.7rem;
+      font-weight: 500;
+      letter-spacing: 0.1em;
+      color: rgba(255,255,255,0.4);
+      background: rgba(255,255,255,0.05);
+      border: 1px solid var(--border);
+      border-radius: 100px;
+      padding: 0.3rem 1rem;
+      margin-bottom: 1.5rem;
+      text-transform: uppercase;
+    }
+
+    /* ── BRANCH CARDS ── */
+    .branch-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 1.25rem;
+      max-width: 700px;
+      width: 100%;
+      opacity: 0;
+      animation: fadeUp 0.7s cubic-bezier(.4,0,.2,1) forwards;
+      animation-delay: 1.1s;
+    }
+
+    .branch-card {
+      background: var(--s1);
+      border: 1px solid var(--border);
+      border-radius: 18px;
+      padding: 2.25rem;
+      text-decoration: none;
+      display: flex;
+      flex-direction: column;
+      gap: 0.65rem;
+      position: relative;
+      overflow: hidden;
+      transition: border-color 0.28s, background 0.28s, transform 0.32s cubic-bezier(.4,0,.2,1), box-shadow 0.28s;
+    }
+
+    .branch-card::before {
+      content: '';
+      position: absolute;
+      inset: 0;
+      background: radial-gradient(ellipse at top left, rgba(255,255,255,0.03) 0%, transparent 70%);
+      pointer-events: none;
+    }
+
+    .branch-card:not(.branch-card--soon):hover {
+      border-color: rgba(255,255,255,0.18);
+      background: #151515;
+      transform: translateY(-6px);
+      box-shadow: 0 24px 60px rgba(0,0,0,0.5);
+    }
+
+    .branch-card-city {
+      font-size: 0.58rem;
+      font-weight: 500;
+      letter-spacing: 0.22em;
+      text-transform: uppercase;
+      color: var(--muted);
+    }
+
+    .branch-card h2 {
+      font-family: 'Syne', sans-serif;
+      font-weight: 800;
+      font-size: 1.5rem;
+      letter-spacing: -0.01em;
+      color: var(--pure);
+      text-transform: uppercase;
+      animation: none;
+      opacity: 1;
+      line-height: 1;
+    }
+
+    .branch-card-desc {
+      font-size: 0.82rem;
+      color: #5a5a5a;
+      font-weight: 300;
+      line-height: 1.65;
+      flex-grow: 1;
+      margin-bottom: 0.5rem;
+    }
+
+    .branch-card-cta {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.5rem;
+      font-family: 'Syne', sans-serif;
+      font-weight: 700;
+      font-size: 0.75rem;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      color: var(--bg);
+      background: var(--pure);
+      border-radius: 100px;
+      padding: 0.72rem 1.4rem;
+      transition: opacity 0.2s, transform 0.2s;
+      align-self: flex-start;
+    }
+    .branch-card:not(.branch-card--soon):hover .branch-card-cta {
+      opacity: 0.85;
+      transform: scale(0.97);
+    }
+
+    .branch-card--soon {
+      opacity: 0.38;
+      cursor: not-allowed;
+    }
+    .branch-card--soon:hover { transform: none; box-shadow: none; }
+
+    .branch-soon-badge {
+      position: absolute;
+      top: 1.25rem;
+      right: 1.25rem;
+      font-size: 0.52rem;
+      font-weight: 600;
+      letter-spacing: 0.18em;
+      text-transform: uppercase;
+      color: var(--muted);
+      background: rgba(255,255,255,0.04);
+      border: 1px solid var(--border);
+      border-radius: 100px;
+      padding: 0.22rem 0.7rem;
+    }
+
+    .branch-card--soon .branch-card-cta {
+      color: var(--sub);
+      background: rgba(255,255,255,0.05);
+      border: 1px solid var(--border);
+    }
+
+    /* ── INTEGRATIONS FOOTER ── */
+    .integrations-bar {
+      margin-top: 3rem;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 2rem;
+      flex-wrap: wrap;
+      opacity: 0;
+      animation: fadeUp 0.7s cubic-bezier(.4,0,.2,1) forwards;
+      animation-delay: 1.3s;
+    }
+
+    .int-item {
+      display: flex;
+      align-items: center;
+      gap: 0.45rem;
+      font-size: 0.62rem;
+      font-weight: 500;
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+      color: #3a3a3a;
+    }
+
+    .int-item svg { opacity: 0.4; flex-shrink: 0; }
+
+    /* ── FOOTER ── */
+    footer {
+      background: var(--bg);
+      border-top: 1px solid var(--border);
+      padding: 1.75rem 2.5rem;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 1rem;
+      flex-wrap: wrap;
+    }
+    .footer-logo {
+      font-family: 'Syne', sans-serif;
+      font-weight: 800;
+      font-size: 0.95rem;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      color: var(--pure);
+    }
+    .footer-copy { font-size: 0.7rem; color: var(--muted); }
+
+    /* ── MOBILE ── */
+    @media (max-width: 640px) {
+      nav { padding: 1.2rem 1.5rem; }
+      main { padding: 7rem 1.25rem 4rem; }
+      .branch-grid { grid-template-columns: 1fr; max-width: 420px; }
+      .branch-card { padding: 1.75rem; }
+      .integrations-bar { gap: 1.25rem; }
+      footer { flex-direction: column; align-items: flex-start; padding: 1.5rem; }
+    }
+  </style>
+  <script src="config.js" defer></script>
+</head>
+<body>
+
+  <!-- LOADER -->
+  <div id="loader">
+    <div class="loader-logo">Agendar</div>
+  </div>
+
+  <!-- CURSOR -->
+  <div class="cursor" id="cursor"></div>
+  <div class="cursor-ring" id="cursorRing"></div>
+
+  <!-- NAV -->
+  <nav id="nav">
+    <a href="index.html" class="logo">Chiky Barber</a>
+    <a href="servicios.html" class="nav-back">← Ver servicios</a>
+  </nav>
+
+  <!-- WATERMARK -->
+  <div class="page-watermark">AGENDAR</div>
+
+  <!-- MAIN -->
+  <main>
+    <div class="booking-header">
+      <div class="tag">Reservar hora</div>
+      <!-- Chip con servicio seleccionado (se rellena por JS si viene ?service=...) -->
+      <div class="service-chip" id="serviceChip" style="display:none"></div>
+      <h1>¿Dónde quieres<br>agendar?</h1>
+      <p>Selecciona la sucursal más conveniente para ti<br>y reserva tu hora en segundos.</p>
+    </div>
+
+    <div class="branch-grid">
+
+      <!-- ── SUCURSAL 1: VIÑA DEL MAR ── -->
+      <a class="branch-card"
+         href="https://agendapro.com/site/cl/aurasalonmalegrooming/chiky-barber/673925"
+         target="_blank"
+         rel="noopener noreferrer"
+         data-branch="vina"
+         id="branchVina">
+        <span class="branch-card-city">Región de Valparaíso</span>
+        <h2>Viña del Mar</h2>
+        <p class="branch-card-desc">Reserva tu hora en nuestra sucursal de Viña del Mar.</p>
+        <span class="branch-card-cta">
+          Agendar Ahora
+          <svg width="13" height="13" viewBox="0 0 13 13" fill="none">
+            <path d="M2 11L11 2M11 2H5.5M11 2V7.5" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+          </svg>
+        </span>
+      </a>
+
+      <!-- ── SUCURSAL 2: SANTIAGO ──
+           Cuando esté listo: cambiar <div> por <a href="URL_SANTIAGO"> y quitar branch-card--soon -->
+      <div class="branch-card branch-card--soon"
+           data-branch="santiago"
+           id="branchSantiago">
+        <span class="branch-soon-badge">Próximamente</span>
+        <span class="branch-card-city">Región Metropolitana</span>
+        <h2>Santiago</h2>
+        <p class="branch-card-desc">Reserva tu hora en nuestra sucursal de Santiago.</p>
+        <span class="branch-card-cta">Próximamente</span>
+      </div>
+
+    </div>
+
+    <!-- Indicadores de integraciones -->
+    <div class="integrations-bar">
+      <span class="int-item">
+        <!-- Email -->
+        <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+          <rect x="2" y="4" width="20" height="16" rx="2"/><path d="m22 7-8.97 5.7a1.94 1.94 0 0 1-2.06 0L2 7"/>
+        </svg>
+        Confirmación por email
+      </span>
+      <span class="int-item">
+        <!-- Calendar -->
+        <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+          <rect x="3" y="4" width="18" height="18" rx="2"/><path d="M16 2v4M8 2v4M3 10h18"/>
+        </svg>
+        Sincronización de calendario
+      </span>
+      <span class="int-item">
+        <!-- Bell -->
+        <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+          <path d="M6 8a6 6 0 0 1 12 0c0 7 3 9 3 9H3s3-2 3-9M10.3 21a1.94 1.94 0 0 0 3.4 0"/>
+        </svg>
+        Recordatorios automáticos
+      </span>
+    </div>
+  </main>
+
+  <!-- FOOTER -->
+  <footer>
+    <div class="footer-logo">Chiky Barber</div>
+    <div class="footer-copy">© 2026 Chiky Barber · Todos los derechos reservados</div>
+  </footer>
+
+  <script>
+    // Loader
+    window.addEventListener('load', () => {
+      setTimeout(() => document.getElementById('loader').classList.add('hide'), 800);
+    });
+
+    // Cursor
+    const cursor = document.getElementById('cursor');
+    const ring   = document.getElementById('cursorRing');
+    let mx = 0, my = 0, rx = 0, ry = 0;
+    document.addEventListener('mousemove', e => {
+      mx = e.clientX; my = e.clientY;
+      cursor.style.left = mx + 'px';
+      cursor.style.top  = my + 'px';
+    });
+    (function animRing() {
+      rx += (mx - rx) * 0.12;
+      ry += (my - ry) * 0.12;
+      ring.style.left = rx + 'px';
+      ring.style.top  = ry + 'px';
+      requestAnimationFrame(animRing);
+    })();
+    document.querySelectorAll('a, button, .branch-card').forEach(el => {
+      el.addEventListener('mouseenter', () => ring.classList.add('expand'));
+      el.addEventListener('mouseleave', () => ring.classList.remove('expand'));
+    });
+
+    // Nav scroll
+    const nav = document.getElementById('nav');
+    window.addEventListener('scroll', () => {
+      nav.classList.toggle('scrolled', window.scrollY > 50);
+    }, { passive: true });
+
+    // Leer ?service= de la URL y mostrar chip
+    const params = new URLSearchParams(window.location.search);
+    const serviceParam = params.get('service');
+    if (serviceParam) {
+      const chip = document.getElementById('serviceChip');
+      chip.textContent = decodeURIComponent(serviceParam);
+      chip.style.display = 'inline-block';
+    }
+
+    // ── TRACKING ──────────────────────────────────────────────────
+    document.getElementById('branchVina').addEventListener('click', () => {
+      // Google Analytics 4
+      if (typeof gtag === 'function') {
+        gtag('event', 'select_branch', {
+          event_category: 'booking',
+          event_label: 'Viña del Mar',
+          service_name: serviceParam || 'directo'
+        });
+      }
+      // Meta Pixel
+      if (typeof fbq === 'function') {
+        fbq('track', 'Schedule', {
+          content_name: serviceParam || 'directo',
+          branch: 'Viña del Mar'
+        });
+      }
+    });
+
+    // ══════════════════════════════════════════
+    // CONFIGURACIÓN PARA FUTURAS INTEGRACIONES
+    // ══════════════════════════════════════════
+    /*
+    const BOOKING_CONFIG = {
+      branches: {
+        vina: {
+          name: 'Viña del Mar',
+          agendaproUrl: 'https://agendapro.com/site/cl/aurasalonmalegrooming/chiky-barber/673925',
+          calendarId: '',
+          notifyEmail: '',
+        },
+        santiago: {
+          name: 'Santiago',
+          agendaproUrl: '',          // pendiente
+          calendarId: '',
+          notifyEmail: '',
+        }
+      },
+
+      // EMAIL — implementar en /api/booking-confirm.js (Vercel Serverless)
+      // Proveedores compatibles: Resend, SendGrid, Nodemailer, SMTP
+      // Variables: {{nombre}}, {{servicio}}, {{fecha}}, {{hora}}, {{sucursal}}
+      email: {
+        provider: 'resend',
+        from: 'no-reply@aurasalon.cl',
+        templates: {
+          clientConfirm: 'tmpl_client_confirm',
+          internalNotify: 'tmpl_internal_notify',
+        }
+      },
+
+      // CALENDARIO — Google Calendar API / archivo .ics para Apple & Outlook
+      calendar: {
+        googleClientId: '',
+        reminderMinutesBefore: [60, 1440],
+      },
+
+      // ANALYTICS
+      ga4MeasurementId: '',    // G-XXXXXXXX
+      metaPixelId: '',         // ID de Meta Pixel
+    };
+    */
+  </script>
+</body>
+</html>
