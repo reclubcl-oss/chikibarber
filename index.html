@@ -1033,74 +1033,179 @@
     /* ── CONTACTO ── */
     #contacto { background: var(--s1); }
 
-    .contact-wrap {
-      display: grid;
-      grid-template-columns: 1fr 1.1fr;
-      gap: 5rem;
-      align-items: start;
-    }
-
-    .contact-left h2 { margin: 0.8rem 0 1.2rem; }
-    .contact-left > p { font-size: 0.9rem; color: var(--sub); font-weight: 300; line-height: 1.8; margin-bottom: 2.5rem; }
-
-    .c-items { display: flex; flex-direction: column; gap: 0; }
-
-    .c-item {
+    /* ── BRANCH TABS ── */
+    .branch-tabs {
       display: flex;
-      justify-content: space-between;
-      align-items: center;
-      padding: 1rem 0;
-      border-bottom: 1px solid var(--border);
+      gap: 1rem;
+      justify-content: center;
+      flex-wrap: wrap;
     }
 
-    .c-item:first-child { border-top: 1px solid var(--border); }
-
-    .c-key { font-size: 0.68rem; font-weight: 500; letter-spacing: 0.15em; text-transform: uppercase; color: var(--muted); }
-    .c-val { font-size: 0.88rem; color: var(--light); }
-
-    .c-socials { display: flex; gap: 0.5rem; margin-top: 2rem; }
-
-    .c-social {
-      display: inline-flex;
+    .branch-tab {
+      display: flex;
       align-items: center;
-      gap: 0.4rem;
-      font-size: 0.72rem;
-      font-weight: 500;
-      letter-spacing: 0.1em;
-      text-transform: uppercase;
-      color: var(--sub);
-      background: rgba(255,255,255,0.04);
-      border: 1px solid var(--border);
-      border-radius: 100px;
-      padding: 0.5rem 1.1rem;
-      text-decoration: none;
-      transition: background 0.2s, color 0.2s;
+      gap: 0.85rem;
+      background: rgba(255,255,255,0.03);
+      border: 1px solid rgba(255,255,255,0.08);
+      border-radius: 14px;
+      padding: 1rem 1.5rem;
+      cursor: pointer;
+      transition: background 0.2s, border-color 0.2s;
+      min-width: 200px;
+      text-align: left;
     }
 
-    .c-social:hover { background: rgba(255,255,255,0.08); color: var(--pure); }
+    .branch-tab:hover { background: rgba(255,255,255,0.06); }
+    .branch-tab.active { background: rgba(255,255,255,0.07); border-color: rgba(255,255,255,0.2); }
 
-    /* FORM */
-    .contact-form {
+    .branch-tab-dot {
+      width: 8px; height: 8px;
+      border-radius: 50%;
+      background: #444;
+      flex-shrink: 0;
+      transition: background 0.2s;
+    }
+    .branch-tab.active .branch-tab-dot { background: #22c55e; box-shadow: 0 0 8px #22c55e88; }
+
+    .branch-tab-name {
+      font-family: 'Syne', sans-serif;
+      font-weight: 700;
+      font-size: 0.9rem;
+      color: #fff;
+      letter-spacing: 0.02em;
+    }
+    .branch-tab-addr { font-size: 0.7rem; color: #555; margin-top: 2px; }
+
+    /* ── BOOKING WIDGET ── */
+    .booking-widget {
       background: var(--s2);
       border: 1px solid var(--border);
-      border-radius: 16px;
+      border-radius: 20px;
       padding: 2.5rem;
+      max-width: 620px;
+      margin: 0 auto;
+    }
+
+    .bk-step-label {
+      font-size: 0.62rem;
+      letter-spacing: 0.2em;
+      text-transform: uppercase;
+      color: #444;
+      margin-bottom: 1.5rem;
+      font-weight: 500;
+    }
+
+    /* ── CALENDAR ── */
+    .cal-box {
+      background: rgba(255,255,255,0.02);
+      border: 1px solid rgba(255,255,255,0.06);
+      border-radius: 14px;
+      overflow: hidden;
+    }
+
+    .cal-header {
       display: flex;
-      flex-direction: column;
-      gap: 1.2rem;
+      align-items: center;
+      justify-content: space-between;
+      padding: 1rem 1.25rem;
+      border-bottom: 1px solid rgba(255,255,255,0.06);
     }
 
-    .form-title {
+    .cal-header span {
       font-family: 'Syne', sans-serif;
-      font-weight: 800;
-      font-size: 1.3rem;
-      letter-spacing: -0.01em;
-      color: var(--pure);
-      margin-bottom: 0.5rem;
+      font-weight: 700;
+      font-size: 0.9rem;
+      color: #fff;
+      letter-spacing: 0.06em;
+      text-transform: uppercase;
     }
 
-    .f-row { display: grid; grid-template-columns: 1fr 1fr; gap: 1rem; }
-    .f-group { display: flex; flex-direction: column; gap: 0.4rem; }
+    .cal-nav {
+      background: rgba(255,255,255,0.05);
+      border: 1px solid rgba(255,255,255,0.08);
+      border-radius: 8px;
+      color: #888;
+      width: 32px; height: 32px;
+      font-size: 1.1rem;
+      cursor: pointer;
+      display: flex; align-items: center; justify-content: center;
+      transition: background 0.15s, color 0.15s;
+    }
+    .cal-nav:hover { background: rgba(255,255,255,0.1); color: #fff; }
+
+    .cal-weekdays {
+      display: grid;
+      grid-template-columns: repeat(7, 1fr);
+      padding: 0.75rem 1rem 0.25rem;
+      gap: 4px;
+    }
+    .cal-weekdays span {
+      text-align: center;
+      font-size: 0.62rem;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      color: #444;
+      font-weight: 600;
+    }
+
+    .cal-grid {
+      display: grid;
+      grid-template-columns: repeat(7, 1fr);
+      padding: 0.25rem 1rem 1rem;
+      gap: 4px;
+    }
+
+    .cal-day {
+      aspect-ratio: 1;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 0.82rem;
+      color: #888;
+      border-radius: 8px;
+      cursor: pointer;
+      transition: background 0.15s, color 0.15s;
+      border: 1px solid transparent;
+      font-weight: 400;
+    }
+    .cal-day:hover:not(.disabled):not(.empty) { background: rgba(255,255,255,0.08); color: #fff; }
+    .cal-day.today { color: #fff; border-color: rgba(255,255,255,0.15); }
+    .cal-day.selected { background: #fff; color: #080808; font-weight: 700; border-color: transparent; }
+    .cal-day.disabled { color: #2a2a2a; cursor: default; }
+    .cal-day.empty { cursor: default; }
+
+    /* ── TIME GRID ── */
+    .bk-selected-date {
+      font-size: 0.82rem;
+      color: #888;
+      margin-bottom: 1.25rem;
+    }
+
+    .time-grid {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 8px;
+      margin-bottom: 1.5rem;
+    }
+
+    .time-slot {
+      padding: 0.65rem 0.5rem;
+      border-radius: 10px;
+      border: 1px solid rgba(255,255,255,0.08);
+      background: rgba(255,255,255,0.03);
+      color: #888;
+      font-size: 0.82rem;
+      text-align: center;
+      cursor: pointer;
+      transition: background 0.15s, color 0.15s, border-color 0.15s;
+      font-weight: 500;
+    }
+    .time-slot:hover { background: rgba(255,255,255,0.08); color: #fff; border-color: rgba(255,255,255,0.15); }
+    .time-slot.selected { background: #fff; color: #080808; font-weight: 700; border-color: transparent; }
+    .time-slot.booked { color: #2a2a2a; border-color: rgba(255,255,255,0.04); cursor: not-allowed; text-decoration: line-through; }
+
+    /* ── FORM ── */
+    .f-group { display: flex; flex-direction: column; gap: 0.4rem; margin-bottom: 1rem; }
 
     .f-group label {
       font-size: 0.65rem;
@@ -1134,7 +1239,6 @@
     }
 
     .f-group select option { background: #181818; }
-    .f-group textarea { resize: none; min-height: 90px; }
 
     .btn-submit {
       font-family: 'Syne', sans-serif;
@@ -1149,10 +1253,54 @@
       border-radius: 100px;
       cursor: pointer;
       transition: opacity 0.2s, transform 0.2s;
-      margin-top: 0.3rem;
+      margin-top: 0.5rem;
+      width: 100%;
+    }
+    .btn-submit:hover { opacity: 0.85; transform: scale(0.98); }
+
+    .bk-back {
+      background: none;
+      border: none;
+      color: #444;
+      font-size: 0.75rem;
+      cursor: pointer;
+      padding: 0;
+      margin-top: 0.5rem;
+      transition: color 0.15s;
+    }
+    .bk-back:hover { color: #888; }
+
+    .bk-summary {
+      background: rgba(255,255,255,0.03);
+      border: 1px solid rgba(255,255,255,0.07);
+      border-radius: 10px;
+      padding: 0.85rem 1rem;
+      font-size: 0.8rem;
+      color: #888;
+      margin-bottom: 1.5rem;
+      line-height: 1.6;
     }
 
-    .btn-submit:hover { opacity: 0.85; transform: scale(0.98); }
+    /* ── BRANCH INFO CARDS ── */
+    .branch-info-cards {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+      gap: 1rem;
+    }
+
+    .binfo-card {
+      display: flex;
+      align-items: center;
+      gap: 0.85rem;
+      background: rgba(255,255,255,0.03);
+      border: 1px solid rgba(255,255,255,0.06);
+      border-radius: 12px;
+      padding: 1rem 1.25rem;
+    }
+
+    .binfo-icon { font-size: 1.1rem; flex-shrink: 0; }
+    .binfo-label { font-size: 0.65rem; letter-spacing: 0.12em; text-transform: uppercase; color: #444; margin-bottom: 3px; }
+    .binfo-val { font-size: 0.82rem; color: #888; }
 
     /* ── FOOTER ── */
     footer {
@@ -1750,9 +1898,8 @@
     </div>
   </section>
 
-  <!-- CONTACTO -->
+  <!-- RESERVAS -->
   <section id="contacto" style="position: relative; overflow: hidden;">
-    <!-- Brush tool -->
     <div class="tool" id="tool-brush">
       <svg width="140" height="140" viewBox="0 0 100 100" fill="none" xmlns="http://www.w3.org/2000/svg" opacity="0.07">
         <line x1="50" y1="15" x2="50" y2="62" stroke="white" stroke-width="3" stroke-linecap="round"/>
@@ -1762,107 +1909,120 @@
       </svg>
     </div>
     <div class="container">
-      <div class="contact-wrap">
-        <div class="contact-left r">
-          <div class="tag">Reservas</div>
-          <h2>Reservá<br>tu turno</h2>
-          <p>Asegurate tu lugar. También podés escribirnos directo por WhatsApp o Instagram.</p>
-          <div class="c-items">
-            <div class="c-item">
-              <span class="c-key">WhatsApp</span>
-              <span class="c-val">+54 9 11 XXXX-XXXX</span>
-            </div>
-            <div class="c-item">
-              <span class="c-key">Instagram</span>
-              <span class="c-val">@chikyy_barber</span>
-            </div>
-            <div class="c-item">
-              <span class="c-key">Horario</span>
-              <span class="c-val">Lun – Sáb &nbsp;9:00 – 20:00</span>
-            </div>
-            <div class="c-item">
-              <span class="c-key">Ubicación</span>
-              <span class="c-val">Viña del Mar, Chile</span>
-            </div>
+
+      <!-- Header -->
+      <div style="text-align:center; margin-bottom: 3rem;">
+        <div class="tag" style="display:inline-block;">Reservas</div>
+        <h2 style="margin-top:0.75rem;">Agendá tu turno</h2>
+        <p style="color:#666; max-width:460px; margin:0.75rem auto 0; font-size:0.9rem;">Elegí tu sucursal, seleccioná el día y la hora. Recibirás una confirmación por email.</p>
+      </div>
+
+      <!-- Branch tabs -->
+      <div class="branch-tabs" style="margin-bottom:2.5rem;">
+        <button class="branch-tab active" data-branch="vina" onclick="switchBranch('vina')">
+          <span class="branch-tab-dot"></span>
+          <div>
+            <div class="branch-tab-name">Viña del Mar</div>
+            <div class="branch-tab-addr">Lun – Sáb · 9:00 – 19:00</div>
           </div>
-          <div class="c-socials">
-            <a href="https://www.instagram.com/chikyy_barber/" target="_blank" rel="noopener" class="c-social">Instagram ↗</a>
-            <a href="https://wa.me/5491100000000" target="_blank" rel="noopener" class="c-social">WhatsApp ↗</a>
+        </button>
+        <button class="branch-tab" data-branch="santiago" onclick="switchBranch('santiago')">
+          <span class="branch-tab-dot"></span>
+          <div>
+            <div class="branch-tab-name">Santiago</div>
+            <div class="branch-tab-addr">Lun – Sáb · 9:00 – 19:00</div>
+          </div>
+        </button>
+      </div>
+
+      <!-- Booking widget -->
+      <div class="booking-widget">
+
+        <!-- Step 1: Calendar -->
+        <div class="bk-step" id="bk-step-1">
+          <div class="bk-step-label">01 — Elige una fecha</div>
+          <div class="cal-box">
+            <div class="cal-header">
+              <button class="cal-nav" onclick="calPrev()">‹</button>
+              <span id="cal-month-label"></span>
+              <button class="cal-nav" onclick="calNext()">›</button>
+            </div>
+            <div class="cal-weekdays">
+              <span>Lu</span><span>Ma</span><span>Mi</span><span>Ju</span><span>Vi</span><span>Sa</span><span>Do</span>
+            </div>
+            <div class="cal-grid" id="cal-grid"></div>
           </div>
         </div>
 
-        <form class="contact-form r" data-d="1" onsubmit="handleSubmit(event)">
-          <div class="form-title">Hacé tu reserva</div>
-          <div class="f-row">
+        <!-- Step 2: Time slots -->
+        <div class="bk-step" id="bk-step-2" style="display:none;">
+          <div class="bk-step-label">02 — Elige una hora</div>
+          <div class="bk-selected-date" id="bk-date-display"></div>
+          <div class="time-grid" id="time-grid"></div>
+          <button class="bk-back" onclick="backToStep(1)">← Cambiar fecha</button>
+        </div>
+
+        <!-- Step 3: Form -->
+        <div class="bk-step" id="bk-step-3" style="display:none;">
+          <div class="bk-step-label">03 — Tus datos</div>
+          <div class="bk-summary" id="bk-summary"></div>
+          <form id="bk-form" onsubmit="handleSubmit(event)">
             <div class="f-group">
-              <label>Nombre *</label>
-              <input type="text" id="f-name" placeholder="Tu nombre completo" required />
+              <label>Nombre completo *</label>
+              <input type="text" id="f-name" placeholder="Tu nombre" required />
+            </div>
+            <div class="f-group">
+              <label>Email *</label>
+              <input type="email" id="f-email" placeholder="tu@email.com" required />
             </div>
             <div class="f-group">
               <label>Teléfono</label>
               <input type="tel" id="f-phone" placeholder="+569..." />
             </div>
-          </div>
-          <div class="f-group">
-            <label>Email *</label>
-            <input type="email" id="f-email" placeholder="tu@email.com" required />
-          </div>
-          <div class="f-group">
-            <label>Sucursal *</label>
-            <select id="f-branch" required>
-              <option value="" disabled selected>Seleccioná una sucursal</option>
-              <option value="vina">Viña del Mar</option>
-              <option value="santiago">Santiago</option>
-            </select>
-          </div>
-          <div class="f-group">
-            <label>Servicio</label>
-            <select id="f-service">
-              <option value="" selected>— Seleccioná un servicio —</option>
-              <option value="Corte Profesional">Corte Profesional — $19.990</option>
-              <option value="Corte de Precisión (Solo Tijera)">Corte de Precisión (Solo Tijera) — $22.990</option>
-              <option value="Arreglo y Diseño de Barba">Arreglo y Diseño de Barba — $14.990</option>
-              <option value="Arreglo de Barba con Toallas Calientes">Arreglo de Barba con Toallas Calientes — $19.990</option>
-              <option value="Corte + Arreglo de Barba (Toallas Calientes)">Corte + Arreglo de Barba (Toallas Calientes) — $34.990</option>
-              <option value="Corte + Arreglo de Barba">Corte + Arreglo de Barba — $29.990</option>
-            </select>
-          </div>
-          <div class="f-row">
             <div class="f-group">
-              <label>Fecha preferida *</label>
-              <input type="date" id="f-date" required />
+              <label>Fecha de nacimiento</label>
+              <input type="date" id="f-birthdate" />
             </div>
-            <div class="f-group">
-              <label>Hora</label>
-              <select id="f-time">
-                <option value="09:00">09:00</option>
-                <option value="09:30">09:30</option>
-                <option value="10:00" selected>10:00</option>
-                <option value="10:30">10:30</option>
-                <option value="11:00">11:00</option>
-                <option value="11:30">11:30</option>
-                <option value="12:00">12:00</option>
-                <option value="12:30">12:30</option>
-                <option value="13:00">13:00</option>
-                <option value="14:00">14:00</option>
-                <option value="15:00">15:00</option>
-                <option value="15:30">15:30</option>
-                <option value="16:00">16:00</option>
-                <option value="16:30">16:30</option>
-                <option value="17:00">17:00</option>
-                <option value="17:30">17:30</option>
-                <option value="18:00">18:00</option>
-                <option value="19:00">19:00</option>
-              </select>
-            </div>
+            <button type="submit" class="btn-submit" id="submitBtn">Confirmar reserva</button>
+          </form>
+          <button class="bk-back" onclick="backToStep(2)">← Cambiar hora</button>
+        </div>
+
+        <!-- Step 4: Success -->
+        <div class="bk-step" id="bk-step-4" style="display:none; text-align:center; padding: 3rem 1rem;">
+          <div style="font-size:2.5rem; margin-bottom:1rem;">✓</div>
+          <h3 style="font-family:'Syne',sans-serif; font-weight:800; font-size:1.4rem; color:#fff; margin:0 0 0.75rem; text-transform:uppercase; letter-spacing:0.04em;">¡Reserva confirmada!</h3>
+          <p style="color:#666; font-size:0.88rem; line-height:1.6;" id="bk-confirm-msg"></p>
+          <button onclick="resetBooking()" style="margin-top:2rem; padding:0.7rem 1.5rem; border-radius:8px; border:1px solid rgba(255,255,255,0.12); background:transparent; color:#888; font-size:0.8rem; cursor:pointer;">Nueva reserva</button>
+        </div>
+
+      </div><!-- /booking-widget -->
+
+      <!-- Info cards -->
+      <div class="branch-info-cards" style="margin-top:3rem;">
+        <div class="binfo-card">
+          <div class="binfo-icon">📍</div>
+          <div>
+            <div class="binfo-label">Viña del Mar</div>
+            <div class="binfo-val" id="binfo-addr-vina">Dirección por confirmar</div>
           </div>
-          <div class="f-group">
-            <label>Mensaje (opcional)</label>
-            <textarea id="f-notes" placeholder="Alguna referencia o pedido especial..."></textarea>
+        </div>
+        <div class="binfo-card">
+          <div class="binfo-icon">📍</div>
+          <div>
+            <div class="binfo-label">Santiago</div>
+            <div class="binfo-val" id="binfo-addr-santiago">Dirección por confirmar</div>
           </div>
-          <button type="submit" class="btn-submit" id="submitBtn">Reservar turno</button>
-        </form>
+        </div>
+        <div class="binfo-card">
+          <div class="binfo-icon">📸</div>
+          <div>
+            <div class="binfo-label">Instagram</div>
+            <div class="binfo-val"><a href="https://www.instagram.com/chikyy_barber/" target="_blank" rel="noopener" style="color:#888;">@chikyy_barber</a></div>
+          </div>
+        </div>
       </div>
+
     </div>
   </section>
 
@@ -2010,35 +2170,160 @@
     }, { passive: true });
 
     // ── FORM SUBMIT ──
+    /* ── BOOKING STATE ── */
+    const BK = {
+      branch: 'vina',
+      date: null,
+      time: null,
+      calYear: new Date().getFullYear(),
+      calMonth: new Date().getMonth(),
+      bookedSlots: {},
+    };
+
+    const HOURS = ['09:00','09:30','10:00','10:30','11:00','11:30','12:00','12:30',
+                   '13:00','14:00','15:00','15:30','16:00','16:30','17:00','17:30','18:00','19:00'];
+
+    const MONTHS_ES = ['Enero','Febrero','Marzo','Abril','Mayo','Junio',
+                       'Julio','Agosto','Septiembre','Octubre','Noviembre','Diciembre'];
+    const DAYS_ES   = ['domingo','lunes','martes','miércoles','jueves','viernes','sábado'];
+
+    function switchBranch(branch) {
+      BK.branch = branch;
+      BK.date = null;
+      BK.time = null;
+      document.querySelectorAll('.branch-tab').forEach(t => t.classList.toggle('active', t.dataset.branch === branch));
+      goStep(1);
+      renderCal();
+    }
+
+    function goStep(n) {
+      for (let i = 1; i <= 4; i++) {
+        const el = document.getElementById('bk-step-' + i);
+        if (el) el.style.display = i === n ? 'block' : 'none';
+      }
+    }
+
+    function backToStep(n) { goStep(n); }
+
+    /* ── CALENDAR ── */
+    function renderCal() {
+      const y = BK.calYear, m = BK.calMonth;
+      document.getElementById('cal-month-label').textContent = MONTHS_ES[m] + ' ' + y;
+      const grid = document.getElementById('cal-grid');
+      grid.innerHTML = '';
+
+      const firstDay = new Date(y, m, 1).getDay(); // 0=Sun
+      const offset   = (firstDay + 6) % 7;         // Mon=0
+      const daysInMonth = new Date(y, m + 1, 0).getDate();
+      const today    = new Date(); today.setHours(0,0,0,0);
+
+      for (let i = 0; i < offset; i++) {
+        const el = document.createElement('div');
+        el.className = 'cal-day empty';
+        grid.appendChild(el);
+      }
+
+      for (let d = 1; d <= daysInMonth; d++) {
+        const date = new Date(y, m, d);
+        const dateStr = y + '-' + String(m+1).padStart(2,'0') + '-' + String(d).padStart(2,'0');
+        const dow = date.getDay(); // 0=Sun
+        const isPast    = date < today;
+        const isSunday  = dow === 0;
+        const isToday   = date.getTime() === today.getTime();
+        const isSelected = BK.date === dateStr;
+
+        const el = document.createElement('div');
+        el.textContent = d;
+        el.className = 'cal-day' +
+          (isPast || isSunday ? ' disabled' : '') +
+          (isToday ? ' today' : '') +
+          (isSelected ? ' selected' : '');
+
+        if (!isPast && !isSunday) {
+          el.onclick = () => pickDate(dateStr, date);
+        }
+        grid.appendChild(el);
+      }
+    }
+
+    function calPrev() {
+      if (BK.calMonth === 0) { BK.calYear--; BK.calMonth = 11; }
+      else BK.calMonth--;
+      renderCal();
+    }
+    function calNext() {
+      if (BK.calMonth === 11) { BK.calYear++; BK.calMonth = 0; }
+      else BK.calMonth++;
+      renderCal();
+    }
+
+    async function pickDate(dateStr, dateObj) {
+      BK.date = dateStr;
+      renderCal();
+
+      // Load booked slots for this date+branch from Supabase
+      const SB_URL  = 'https://xljymxrjejbqynskumwu.supabase.co';
+      const SB_ANON = 'sb_publishable_0QkYeDhmKK4Ck-AY8fQScg_uyOXJUeO';
+      try {
+        const res = await fetch(
+          SB_URL + '/rest/v1/bookings?date=eq.' + dateStr + '&branch=eq.' + BK.branch + '&status=neq.cancelled&select=time',
+          { headers: { 'apikey': SB_ANON, 'Authorization': 'Bearer ' + SB_ANON } }
+        );
+        const data = await res.json();
+        BK.bookedSlots[dateStr] = (data || []).map(b => b.time.slice(0,5));
+      } catch { BK.bookedSlots[dateStr] = []; }
+
+      const dayName = DAYS_ES[dateObj.getDay()];
+      const [y,mo,d] = dateStr.split('-');
+      document.getElementById('bk-date-display').textContent =
+        dayName.charAt(0).toUpperCase() + dayName.slice(1) + ', ' + parseInt(d) + ' de ' + MONTHS_ES[parseInt(mo)-1] + ' ' + y;
+
+      renderTimeGrid(dateStr);
+      goStep(2);
+    }
+
+    function renderTimeGrid(dateStr) {
+      const booked = BK.bookedSlots[dateStr] || [];
+      const grid = document.getElementById('time-grid');
+      grid.innerHTML = '';
+      HOURS.forEach(h => {
+        const el = document.createElement('div');
+        const isBooked = booked.includes(h);
+        el.className = 'time-slot' + (isBooked ? ' booked' : '') + (BK.time === h ? ' selected' : '');
+        el.textContent = h;
+        if (!isBooked) el.onclick = () => pickTime(h);
+        grid.appendChild(el);
+      });
+    }
+
+    function pickTime(time) {
+      BK.time = time;
+      document.querySelectorAll('.time-slot').forEach(el => {
+        el.classList.toggle('selected', el.textContent === time);
+      });
+      const [y,mo,d] = BK.date.split('-');
+      const branchLabel = BK.branch === 'vina' ? 'Viña del Mar' : 'Santiago';
+      document.getElementById('bk-summary').innerHTML =
+        '<strong style="color:#fff">' + parseInt(d) + ' de ' + MONTHS_ES[parseInt(mo)-1] + ' · ' + time + '</strong>' +
+        '&nbsp;&nbsp;·&nbsp;&nbsp;' + branchLabel;
+      goStep(3);
+    }
+
     async function handleSubmit(e) {
       e.preventDefault();
       const btn = document.getElementById('submitBtn');
-      btn.textContent = 'Enviando...';
+      btn.textContent = 'Confirmando...';
       btn.disabled = true;
 
       const SB_URL  = 'https://xljymxrjejbqynskumwu.supabase.co';
       const SB_ANON = 'sb_publishable_0QkYeDhmKK4Ck-AY8fQScg_uyOXJUeO';
 
-      const name    = document.getElementById('f-name').value.trim();
-      const phone   = document.getElementById('f-phone').value.trim();
-      const email   = document.getElementById('f-email').value.trim();
-      const branch  = document.getElementById('f-branch').value;
-      const service = document.getElementById('f-service').value;
-      const date    = document.getElementById('f-date').value;
-      const time    = document.getElementById('f-time').value;
-      const notes   = document.getElementById('f-notes').value.trim();
-
-      const PRICES = {
-        'Corte Profesional': 19990,
-        'Corte de Precisión (Solo Tijera)': 22990,
-        'Arreglo y Diseño de Barba': 14990,
-        'Arreglo de Barba con Toallas Calientes': 19990,
-        'Corte + Arreglo de Barba (Toallas Calientes)': 34990,
-        'Corte + Arreglo de Barba': 29990,
-      };
+      const name      = document.getElementById('f-name').value.trim();
+      const email     = document.getElementById('f-email').value.trim();
+      const phone     = document.getElementById('f-phone').value.trim();
+      const birthdate = document.getElementById('f-birthdate').value;
 
       try {
-        // Save to Supabase
         await fetch(SB_URL + '/rest/v1/bookings', {
           method: 'POST',
           headers: {
@@ -2051,51 +2336,51 @@
             client_name:  name,
             client_email: email,
             client_phone: phone || null,
-            service_id:   service || null,
-            branch:       branch,
-            date:         date,
-            time:         time,
+            branch:       BK.branch,
+            date:         BK.date,
+            time:         BK.time,
             status:       'pending',
-            price:        PRICES[service] || 0,
-            notes:        notes || null,
+            price:        0,
+            notes:        birthdate ? 'Nacimiento: ' + birthdate : null,
           }),
         });
 
-        // Send confirmation email via admin API
         await fetch('https://chikibarber-admin.vercel.app/api/send-booking-email', {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
           body: JSON.stringify({
             client_name:  name,
             client_email: email,
-            service_name: service,
-            date:         date,
-            time:         time,
-            branch:       branch,
-            notes:        notes,
+            date:         BK.date,
+            time:         BK.time,
+            branch:       BK.branch,
           }),
         });
 
-        btn.textContent = '✓ Reserva enviada — revisa tu email';
-        btn.style.background = '#22c55e';
-        btn.style.color = '#fff';
-        setTimeout(() => {
-          btn.textContent = 'Reservar turno';
-          btn.style.background = '';
-          btn.style.color = '';
-          btn.disabled = false;
-          e.target.reset();
-        }, 5000);
+        const [y,mo,d] = BK.date.split('-');
+        const branchLabel = BK.branch === 'vina' ? 'Viña del Mar' : 'Santiago';
+        document.getElementById('bk-confirm-msg').innerHTML =
+          'Tu reserva para el <strong style="color:#fff">' + parseInt(d) + ' de ' + MONTHS_ES[parseInt(mo)-1] + ' a las ' + BK.time + '</strong> en <strong style="color:#fff">' + branchLabel + '</strong> fue registrada.<br>Revisá tu email — te enviamos la confirmación a <strong style="color:#fff">' + email + '</strong>.';
+
+        goStep(4);
       } catch (err) {
         btn.textContent = 'Error — intentá de nuevo';
-        btn.style.opacity = '0.7';
-        setTimeout(() => {
-          btn.textContent = 'Reservar turno';
-          btn.style.opacity = '';
-          btn.disabled = false;
-        }, 3000);
+        btn.disabled = false;
+        setTimeout(() => { btn.textContent = 'Confirmar reserva'; }, 3000);
       }
     }
+
+    function resetBooking() {
+      BK.date = null; BK.time = null;
+      BK.calYear = new Date().getFullYear();
+      BK.calMonth = new Date().getMonth();
+      document.getElementById('bk-form').reset();
+      goStep(1);
+      renderCal();
+    }
+
+    // Init calendar
+    renderCal();
 
     /* ── LIGHTBOX ── */
     function openLightbox(src, alt) {
