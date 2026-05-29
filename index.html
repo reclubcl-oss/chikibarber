@@ -2064,13 +2064,35 @@
         onmouseover="this.style.color='#fff'" onmouseout="this.style.color='#555'">
         Ver perfil en Instagram →
       </a>
-      <!-- Instagram embeds oficiales -->
-      <div style="display:grid; grid-template-columns:repeat(3,1fr); gap:16px; max-width:900px; margin:0 auto; justify-items:center;">
-        <blockquote class="instagram-media" data-instgrm-permalink="https://www.instagram.com/p/DWhyZIJB-Tk/" data-instgrm-version="14" style="width:100%;min-width:0;border:0;border-radius:12px;overflow:hidden;"></blockquote>
-        <blockquote class="instagram-media" data-instgrm-permalink="https://www.instagram.com/p/DWC7NoxDm4r/" data-instgrm-version="14" style="width:100%;min-width:0;border:0;border-radius:12px;overflow:hidden;"></blockquote>
-        <blockquote class="instagram-media" data-instgrm-permalink="https://www.instagram.com/p/DY2iH_tpkAl/" data-instgrm-version="14" style="width:100%;min-width:0;border:0;border-radius:12px;overflow:hidden;"></blockquote>
-      </div>
-      <script async src="//www.instagram.com/embed.js"></script>
+      <!-- ═══ POSTS DE INSTAGRAM ═══════════════════════════════════
+           Para agregar un post: copia el link del post y pégalo
+           en el array de abajo. Ejemplo:
+           'https://www.instagram.com/p/ABC123/'
+           ══════════════════════════════════════════════════════ -->
+      <div id="ig-posts" style="display:grid; grid-template-columns:repeat(auto-fill,minmax(280px,1fr)); gap:16px; max-width:960px; margin:0 auto; justify-items:center;"></div>
+      <script>
+        var IG_POSTS = [
+          'https://www.instagram.com/p/DWhyZIJB-Tk/',
+          'https://www.instagram.com/p/DWC7NoxDm4r/',
+          'https://www.instagram.com/p/DY2iH_tpkAl/',
+          /* agregar más links aquí ↓ */
+        ];
+        (function(){
+          var grid = document.getElementById('ig-posts');
+          IG_POSTS.forEach(function(url){
+            var bq = document.createElement('blockquote');
+            bq.className = 'instagram-media';
+            bq.setAttribute('data-instgrm-permalink', url);
+            bq.setAttribute('data-instgrm-version', '14');
+            bq.style.cssText = 'width:100%;min-width:0;border:0;border-radius:12px;overflow:hidden;margin:0;';
+            grid.appendChild(bq);
+          });
+          var s = document.createElement('script');
+          s.src = '//www.instagram.com/embed.js';
+          s.async = true;
+          document.body.appendChild(s);
+        })();
+      </script>
       <a href="https://www.instagram.com/chikyy_barber/" target="_blank" rel="noopener"
         style="display:inline-flex; align-items:center; gap:0.6rem; margin-top:2.5rem; padding:0.75rem 2rem; border-radius:10px; border:1px solid rgba(255,255,255,0.1); color:#ccc; font-size:0.8rem; font-weight:500; text-decoration:none; letter-spacing:0.05em; text-transform:uppercase; transition:border-color 0.2s,color 0.2s;"
         onmouseover="this.style.borderColor='rgba(255,255,255,0.35)';this.style.color='#fff'" onmouseout="this.style.borderColor='rgba(255,255,255,0.1)';this.style.color='#ccc'">
