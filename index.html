@@ -2069,7 +2069,13 @@
            en el array de abajo. Ejemplo:
            'https://www.instagram.com/p/ABC123/'
            ══════════════════════════════════════════════════════ -->
-      <div id="ig-posts" style="display:grid; grid-template-columns:repeat(auto-fill,minmax(280px,1fr)); gap:16px; max-width:960px; margin:0 auto; justify-items:center;"></div>
+      <style>
+        .ig-wrapper { position:relative; width:100%; aspect-ratio:9/16; overflow:hidden; border-radius:14px; background:#111; }
+        .ig-wrapper blockquote { position:absolute; top:0; left:0; width:100% !important; margin:0 !important; border:0 !important; border-radius:0 !important; transform-origin:top left; }
+        .ig-wrapper iframe { border-radius:0 !important; }
+        @media(max-width:600px){ #ig-posts { grid-template-columns: repeat(2,1fr) !important; } }
+      </style>
+      <div id="ig-posts" style="display:grid; grid-template-columns:repeat(3,1fr); gap:12px; max-width:780px; margin:0 auto;"></div>
       <script>
         var IG_POSTS = [
           'https://www.instagram.com/p/DWhyZIJB-Tk/',
@@ -2080,16 +2086,33 @@
         (function(){
           var grid = document.getElementById('ig-posts');
           IG_POSTS.forEach(function(url){
+            var wrap = document.createElement('div');
+            wrap.className = 'ig-wrapper';
             var bq = document.createElement('blockquote');
             bq.className = 'instagram-media';
             bq.setAttribute('data-instgrm-permalink', url);
             bq.setAttribute('data-instgrm-version', '14');
-            bq.style.cssText = 'width:100%;min-width:0;border:0;border-radius:12px;overflow:hidden;margin:0;';
-            grid.appendChild(bq);
+            bq.setAttribute('data-instgrm-captioned', '');
+            bq.style.cssText = 'width:100%;min-width:0;border:0;margin:0;';
+            wrap.appendChild(bq);
+            grid.appendChild(wrap);
           });
+          // Scale embeds to fill 9:16 container once rendered
           var s = document.createElement('script');
           s.src = '//www.instagram.com/embed.js';
           s.async = true;
+          s.onload = function(){
+            setTimeout(function(){
+              document.querySelectorAll('.ig-wrapper').forEach(function(wrap){
+                var iframe = wrap.querySelector('iframe');
+                if(!iframe) return;
+                var scale = wrap.offsetHeight / iframe.offsetHeight;
+                iframe.style.transform = 'scale('+scale+')';
+                iframe.style.transformOrigin = 'top left';
+                iframe.style.width = (100/scale)+'%';
+              });
+            }, 2000);
+          };
           document.body.appendChild(s);
         })();
       </script>
