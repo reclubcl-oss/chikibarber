@@ -2064,9 +2064,43 @@
         onmouseover="this.style.color='#fff'" onmouseout="this.style.color='#555'">
         Ver perfil en Instagram →
       </a>
-      <!-- Elfsight Instagram Feed Widget — reemplazar el ID cuando lo tengas -->
-      <script src="https://elfsightcdn.com/platform.js" async></script>
-      <div class="elfsight-app-5300f0a8-ab83-477a-a72d-7782022c7cc9" data-elfsight-app-lazy></div>
+      <!-- Instagram grid — actualizar src de cada <img> con fotos reales -->
+      <div id="ig-grid" style="display:grid; grid-template-columns:repeat(3,1fr); gap:6px; max-width:720px; margin:0 auto;">
+      </div>
+      <a href="https://www.instagram.com/chikyy_barber/" target="_blank" rel="noopener"
+        style="display:inline-flex; align-items:center; gap:0.6rem; margin-top:2rem; padding:0.75rem 2rem; border-radius:10px; border:1px solid rgba(255,255,255,0.1); color:#ccc; font-size:0.8rem; font-weight:500; text-decoration:none; letter-spacing:0.05em; text-transform:uppercase; transition:border-color 0.2s,color 0.2s;"
+        onmouseover="this.style.borderColor='rgba(255,255,255,0.35)';this.style.color='#fff'" onmouseout="this.style.borderColor='rgba(255,255,255,0.1)';this.style.color='#ccc'">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><rect x="2" y="2" width="20" height="20" rx="5"/><circle cx="12" cy="12" r="4"/><circle cx="17.5" cy="6.5" r="1" fill="currentColor" stroke="none"/></svg>
+        Ver más en Instagram
+      </a>
+      <style>
+        .ig-cell { position:relative; aspect-ratio:1; overflow:hidden; background:#111; cursor:pointer; }
+        .ig-cell img { width:100%; height:100%; object-fit:cover; display:block; transition:transform 0.4s, opacity 0.3s; }
+        .ig-cell:hover img { transform:scale(1.06); opacity:0.7; }
+        .ig-cell .ig-overlay { position:absolute; inset:0; display:flex; align-items:center; justify-content:center; opacity:0; transition:opacity 0.3s; }
+        .ig-cell:hover .ig-overlay { opacity:1; }
+        .ig-placeholder { width:100%; height:100%; display:flex; align-items:center; justify-content:center; background:linear-gradient(135deg,#111,#1a1a1a); }
+      </style>
+      <script>
+        (function(){
+          const photos = [
+            '', '', '', '', '', '', '', '', ''
+          ];
+          const ig = 'https://www.instagram.com/chikyy_barber/';
+          const grid = document.getElementById('ig-grid');
+          photos.forEach(src => {
+            const a = document.createElement('a');
+            a.href = ig; a.target = '_blank'; a.rel = 'noopener'; a.className = 'ig-cell';
+            if (src) {
+              a.innerHTML = `<img src="${src}" alt="Chiky Barber" loading="lazy">
+                <div class="ig-overlay"><svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="1.5"><rect x="2" y="2" width="20" height="20" rx="5"/><circle cx="12" cy="12" r="4"/><circle cx="17.5" cy="6.5" r="1" fill="white" stroke="none"/></svg></div>`;
+            } else {
+              a.innerHTML = `<div class="ig-placeholder"><svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="#222" stroke-width="1.5"><rect x="2" y="2" width="20" height="20" rx="5"/><circle cx="12" cy="12" r="4"/><circle cx="17.5" cy="6.5" r="1" fill="#222" stroke="none"/></svg></div>`;
+            }
+            grid.appendChild(a);
+          });
+        })();
+      </script>
     </div>
   </section>
 
